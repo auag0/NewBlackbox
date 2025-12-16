@@ -60,7 +60,7 @@ public class NativeCore {
                 //microG
                 String appPackageName = BlackBoxCore.getAppPackageName();
                 if (appPackageName != null && appPackageName.equals("com.google.android.gms")){
-                    //return Process.ROOT_UID;
+                    return Process.SYSTEM_UID;
                 }
                 //webview WV.qE Process.myUid()函数没有做hook所以只能特殊处理
                 //if (Binder.getCallingUid() == Process.myUid()) {
