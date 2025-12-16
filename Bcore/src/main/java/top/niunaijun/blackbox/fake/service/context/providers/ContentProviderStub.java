@@ -63,21 +63,24 @@ public class ContentProviderStub extends ClassInvocationStub implements BContent
                         // Replace package name with the correct one
                         args[i] = mAppPkg;
                     }
-                } else if (arg != null && arg.getClass().getName().equals(BRAttributionSource.getRealClass().getName())) {
-                    // Fix AttributionSource UID
-                    try {
-                        ContextCompat.fixAttributionSourceState(arg, BActivityThread.getBUid());
-                    } catch (Exception e) {
-                        // If fixing AttributionSource fails, try to create a new one or skip
-                        Slog.w(TAG, "Failed to fix AttributionSource, continuing with original");
-                    }
-                } else if (arg != null && arg.getClass().getName().contains("AttributionSource")) {
-                    // Handle any AttributionSource-like objects that might cause UID issues
-                    try {
-                        // Try to fix UID using reflection
-                        fixAttributionSourceUid(arg);
-                    } catch (Exception e) {
-                        Slog.w(TAG, "Failed to fix AttributionSource-like object: " + e.getMessage());
+                } else if (arg != null) {
+                    Class<?> attrSourceClass = BRAttributionSource.getRealClass();
+                    if (attrSourceClass != null && arg.getClass().getName().equals(attrSourceClass.getName())) {
+                        // Fix AttributionSource UID
+                        try {
+                            ContextCompat.fixAttributionSourceState(arg, BActivityThread.getBUid());
+                        } catch (Exception e) {
+                            // If fixing AttributionSource fails, try to create a new one or skip
+                            Slog.w(TAG, "Failed to fix AttributionSource, continuing with original");
+                        }
+                    } else if (arg.getClass().getName().contains("AttributionSource")) {
+                        // Handle any AttributionSource-like objects that might cause UID issues
+                        try {
+                            // Try to fix UID using reflection
+                            fixAttributionSourceUid(arg);
+                        } catch (Exception e) {
+                            Slog.w(TAG, "Failed to fix AttributionSource-like object: " + e.getMessage());
+                        }
                     }
                 }
             }
