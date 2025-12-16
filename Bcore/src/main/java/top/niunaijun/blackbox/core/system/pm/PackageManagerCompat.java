@@ -13,11 +13,13 @@ import android.content.pm.PackageParser;
 import android.content.pm.PermissionInfo;
 import android.content.pm.ProviderInfo;
 import android.content.pm.ServiceInfo;
+import android.content.pm.Signature;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.os.Build;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import black.android.content.pm.BRApplicationInfoL;
@@ -196,13 +198,19 @@ public class PackageManagerCompat {
                 }
             }
         }
+
+        boolean useFakeSignature = shouldUseFakeSignature(p);
+
         PackageInfo base = null;
         try {
             base = BlackBoxCore.getContext().getPackageManager().getPackageInfo(p.packageName, flags);
         } catch (PackageManager.NameNotFoundException ignored) {
         }
         if ((flags & PackageManager.GET_SIGNATURES) != 0) {
-            if (base == null) {
+            if (useFakeSignature && p.mSignatures != null && p.mSignatures.length > 0) {
+                String sig = p.mAppMetaData.getString("fake-signature");
+                pi.signatures = new Signature[]{new Signature(sig)};
+            } else if (base == null) {
                 pi.signatures = p.mSignatures;
             } else {
                 pi.signatures = base.signatures;
@@ -210,7 +218,13 @@ public class PackageManagerCompat {
         }
         if (BuildCompat.isPie()) {
             if ((flags & PackageManager.GET_SIGNING_CERTIFICATES) != 0) {
-                if (base == null) {
+                if (useFakeSignature && p.mSigningDetails != null) {
+                    String sig = p.mAppMetaData.getString("fake-signature");
+                    Signature[] signatures = new Signature[]{new Signature(sig)};
+                    PackageParser.SigningDetails signingDetails = PackageParser.SigningDetails.UNKNOWN;
+                    BRPackageParserSigningDetails.get(signingDetails)._set_signatures(signatures);
+                    pi.signingInfo = BRSigningInfo.get()._new(signingDetails);
+                } else if (base == null) {
                     PackageParser.SigningDetails signingDetails = PackageParser.SigningDetails.UNKNOWN;
                     BRPackageParserSigningDetails.get(signingDetails)._set_signatures(p.mSigningDetails.signatures);
                     pi.signingInfo = BRSigningInfo.get()._new(signingDetails);
@@ -369,6 +383,23 @@ public class PackageManagerCompat {
 //        }
 //        sharedLibraryFileList.add(BEnvironment.JUNIT_JAR.getAbsolutePath());
         info.sharedLibraryFiles = sharedLibraryFileList.toArray(new String[]{});
+    }
+
+    private static boolean shouldUseFakeSignature(BPackage p) {
+        // Check if package has fake-signature permission
+        List<String> requestedPermissions = p.requestedPermissions;
+        if (requestedPermissions != null) {
+            if (!requestedPermissions.contains("android.permission.FAKE_PACKAGE_SIGNATURE")) {
+                return false;
+            }
+        }
+        // Check application metadata for fake-signature
+        if (p.mAppMetaData != null) {
+            if (!p.mAppMetaData.containsKey("fake-signature")) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public static Resources getResources(Context context, ApplicationInfo appInfo) {
