@@ -1,5 +1,6 @@
 package top.niunaijun.blackbox.fake.delegate;
 
+import android.app.IBinderSession;
 import android.app.IServiceConnection;
 import android.content.ComponentName;
 import android.content.Intent;
@@ -10,6 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import black.android.app.BRIServiceConnectionO;
+import black.android.app.BRIServiceConnectionT;
 import top.niunaijun.blackbox.utils.compat.BuildCompat;
 
 /**
@@ -65,6 +67,14 @@ public class ServiceConnectionDelegate extends IServiceConnection.Stub {
             BRIServiceConnectionO.get(mConn).connected(mComponentName, service, dead);
         } else {
             mConn.connected(name, service);
+        }
+    }
+
+    public void connected(ComponentName name, IBinder service, IBinderSession session, boolean dead) throws RemoteException {
+        if (BuildCompat.isTiramisu()) {
+            BRIServiceConnectionT.get(mConn).connected(mComponentName, service, session, dead);
+        } else {
+            connected(name, service, dead);
         }
     }
 }
