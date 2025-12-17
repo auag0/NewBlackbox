@@ -1,7 +1,6 @@
 package top.niunaijun.blackbox.fake.hook;
 
 import android.text.TextUtils;
-import android.util.Log;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -10,6 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import top.niunaijun.blackbox.utils.MethodParameterUtils;
+import top.niunaijun.blackbox.utils.Slog;
 
 /**
  * updated by alex5402 on 3/30/21.
@@ -50,7 +50,12 @@ public abstract class ClassInvocationStub implements InvocationHandler, IInjectH
     @Override
     public void injectHook() {
         mBase = getWho();
-        mProxyInvocation = Proxy.newProxyInstance(mBase.getClass().getClassLoader(), MethodParameterUtils.getAllInterface(mBase.getClass()), this);
+        if (mBase == null) {
+            Slog.w(TAG, "getWho() returned null for " + this.getClass().getSimpleName());
+            mProxyInvocation = null;
+        } else {
+            mProxyInvocation = Proxy.newProxyInstance(mBase.getClass().getClassLoader(), MethodParameterUtils.getAllInterface(mBase.getClass()), this);
+        }
         if (!onlyProxy) {
             inject(mBase, mProxyInvocation);
         }
