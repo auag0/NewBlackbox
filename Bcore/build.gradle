@@ -103,5 +103,6 @@ dependencies {
     implementation "com.github.CodingGay.BlackReflection:core:$rootProject.ext.blackReflection"
 
 
-    // Pine dependency removed
+    implementation "top.canyie.pine:core:0.3.0"
+    implementation "top.canyie.pine:xposed:0.2.0"
 }

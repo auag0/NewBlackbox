@@ -59,6 +59,7 @@ import black.android.graphics.BRCompatibility;
 import black.android.security.net.config.BRNetworkSecurityConfigProvider;
 import black.com.android.internal.content.BRReferrerIntent;
 import black.dalvik.system.BRVMRuntime;
+import top.canyie.pine.xposed.PineXposed;
 import top.niunaijun.blackbox.BlackBoxCore;
 import top.niunaijun.blackbox.app.configuration.AppLifecycleCallback;
 import top.niunaijun.blackbox.app.dispatcher.AppServiceDispatcher;
@@ -1070,7 +1071,13 @@ public class BActivityThread extends IBActivityThread.Stub {
                     continue;
                 }
                 try {
-                    // Remove all PineXposed.loadModule and PineXposed.onPackageLoad calls
+                    ApplicationInfo appInfo = installedModule.getApplication();
+                    String modulePath = appInfo.sourceDir;
+                    PineXposed.loadModule(new File(modulePath));
+
+                    ClassLoader classLoader = context.getClassLoader();
+                    PineXposed.onPackageLoad(installedModule.packageName, appInfo.processName, appInfo, isFirstApplication, classLoader);
+                    Slog.d("BlackBoxXposed", "Loaded Xposed module: " + installedModule.getApplication().packageName);
                 } catch (Throwable e) {
                     String msg = "Failed to load Xposed module: " + installedModule.getApplication().packageName
                                + " (" + installedModule.getApplication().sourceDir + ")\n"
@@ -1079,10 +1086,6 @@ public class BActivityThread extends IBActivityThread.Stub {
                     // Optionally, collect errors for UI display
                     // XposedErrorLogger.logModuleError(installedModule.getApplication().packageName, msg);
                 }
-            }
-            try {
-                // Remove all PineXposed.onPackageLoad calls
-            } catch (Throwable ignored) {
             }
         }
         if (BlackBoxCore.get().isHideXposed()) {
