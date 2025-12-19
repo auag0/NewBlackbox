@@ -1,5 +1,7 @@
 package top.niunaijun.blackbox.core.system.pm;
 
+import static android.content.pm.PackageManager.MATCH_DIRECT_BOOT_UNAWARE;
+
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -45,8 +47,6 @@ import top.niunaijun.blackbox.utils.FileUtils;
 import top.niunaijun.blackbox.utils.Slog;
 import top.niunaijun.blackbox.utils.compat.PackageParserCompat;
 import top.niunaijun.blackbox.utils.compat.XposedParserCompat;
-
-import static android.content.pm.PackageManager.MATCH_DIRECT_BOOT_UNAWARE;
 
 
 /**
@@ -167,7 +167,7 @@ public class BPackageManagerService extends IBPackageManagerService.Stub impleme
                             userId);
                 }
             } else {
-               return mComponentResolver.queryServices(intent, resolvedType, flags, userId);
+                return mComponentResolver.queryServices(intent, resolvedType, flags, userId);
             }
             return Collections.emptyList();
         }
@@ -698,10 +698,10 @@ public class BPackageManagerService extends IBPackageManagerService.Stub impleme
             if (packageName.equals(hostPackageName)) {
                 return result.installError("Cannot clone BlackBox app from within BlackBox. This would create infinite recursion and is not allowed for security reasons.");
             }
-            
+
             // Also check for common BlackBox-related package names to prevent cloning
-            if (packageName.contains("blackbox") || packageName.contains("niunaijun") || 
-                packageName.contains("vspace") || packageName.contains("virtual")) {
+            if (packageName.contains("blackbox") || packageName.contains("niunaijun") ||
+                    packageName.contains("vspace") || packageName.contains("virtual")) {
                 // Allow this but log a warning
                 Slog.w(TAG, "Installing potentially BlackBox-related app: " + packageName + ". Proceed with caution.");
             }

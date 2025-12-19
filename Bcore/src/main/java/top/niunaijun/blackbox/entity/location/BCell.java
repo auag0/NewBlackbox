@@ -2,6 +2,7 @@ package top.niunaijun.blackbox.entity.location;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+
 /*
  * created by BlackBoxing at 2022/03/06
  * */
@@ -26,19 +27,33 @@ public class BCell implements Parcelable {
     public int CID;
     public int TYPE;
     public static final int NETWORK_TYPE_UNKNOWN = 0;
-    /** Current network is GPRS */
+    /**
+     * Current network is GPRS
+     */
     public static final int NETWORK_TYPE_GPRS = 1;
-    /** Current network is EDGE */
+    /**
+     * Current network is EDGE
+     */
     public static final int NETWORK_TYPE_EDGE = 2;
-    /** Current network is UMTS */
+    /**
+     * Current network is UMTS
+     */
     public static final int NETWORK_TYPE_UMTS = 3;
-    /** Current network is CDMA: Either IS95A or IS95B*/
+    /**
+     * Current network is CDMA: Either IS95A or IS95B
+     */
     public static final int NETWORK_TYPE_CDMA = 4;
-    /** Current network is EVDO revision 0*/
+    /**
+     * Current network is EVDO revision 0
+     */
     public static final int NETWORK_TYPE_EVDO_0 = 5;
-    /** Current network is EVDO revision A*/
+    /**
+     * Current network is EVDO revision A
+     */
     public static final int NETWORK_TYPE_EVDO_A = 6;
-    /** Current network is 1xRTT*/
+    /**
+     * Current network is 1xRTT
+     */
     public static final int NETWORK_TYPE_1xRTT = 7;
     /**
      * No phone module
@@ -68,7 +83,9 @@ public class BCell implements Parcelable {
         dest.writeInt(this.TYPE);
     }
 
-    public  BCell(){}
+    public BCell() {
+    }
+
     public BCell(int MCC, int MNC, int LAC, int CID) {
         this.TYPE = this.PHONE_TYPE_GSM;
         this.MCC = MCC;

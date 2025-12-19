@@ -9,13 +9,10 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Objects;
 
-import black.android.location.BRILocationListener;
 import black.android.location.BRILocationManagerStub;
 import black.android.location.provider.BRProviderProperties;
-import black.android.location.provider.ProviderProperties;
 import black.android.os.BRServiceManager;
 import top.niunaijun.blackbox.app.BActivityThread;
-import top.niunaijun.blackbox.entity.location.BLocation;
 import top.niunaijun.blackbox.fake.frameworks.BLocationManager;
 import top.niunaijun.blackbox.fake.hook.BinderInvocationStub;
 import top.niunaijun.blackbox.fake.hook.MethodHook;
@@ -56,19 +53,19 @@ public class ILocationManagerProxy extends BinderInvocationStub {
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 //        Log.d(TAG, "call: " + method.getName());
         MethodParameterUtils.replaceFirstAppPkg(args);
-        
+
         // Check if this is a Google Play Services process trying to access location
         String packageName = BActivityThread.getAppPackageName();
         if (packageName != null && packageName.equals("com.google.android.gms")) {
             // For Google Play Services, return null for location requests to prevent crashes
-            if (method.getName().equals("getLastLocation") || 
-                method.getName().equals("getLastKnownLocation") ||
-                method.getName().equals("requestLocationUpdates")) {
+            if (method.getName().equals("getLastLocation") ||
+                    method.getName().equals("getLastKnownLocation") ||
+                    method.getName().equals("requestLocationUpdates")) {
                 Log.w(TAG, "Blocking location request from Google Play Services to prevent crash");
                 return null;
             }
         }
-        
+
         return super.invoke(proxy, method, args);
     }
 
@@ -90,7 +87,7 @@ public class ILocationManagerProxy extends BinderInvocationStub {
             if (BLocationManager.isFakeLocationEnable()) {
                 return BLocationManager.get().getLocation(BActivityThread.getUserId(), BActivityThread.getAppPackageName()).convert2SystemLocation();
             }
-            
+
             // Handle permission issues gracefully
             try {
                 return method.invoke(who, args);
@@ -112,7 +109,7 @@ public class ILocationManagerProxy extends BinderInvocationStub {
             if (BLocationManager.isFakeLocationEnable()) {
                 return BLocationManager.get().getLocation(BActivityThread.getUserId(), BActivityThread.getAppPackageName()).convert2SystemLocation();
             }
-            
+
             // Handle permission issues gracefully
             try {
                 return method.invoke(who, args);
@@ -138,7 +135,7 @@ public class ILocationManagerProxy extends BinderInvocationStub {
                     return 0;
                 }
             }
-            
+
             // Handle permission issues gracefully
             try {
                 return method.invoke(who, args);

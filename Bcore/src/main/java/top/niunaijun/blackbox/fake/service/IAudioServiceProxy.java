@@ -1,7 +1,6 @@
 package top.niunaijun.blackbox.fake.service;
 
 import android.content.Context;
-import android.media.AudioManager;
 import android.os.IBinder;
 import android.os.IInterface;
 
@@ -31,23 +30,23 @@ public class IAudioServiceProxy extends BinderInvocationStub {
             Slog.e(TAG, "Failed to get AUDIO_SERVICE binder");
             return null;
         }
-        
+
         try {
             // Try multiple reflection paths for different Android versions
             Object iface = null;
-            
+
             // Android 16+ path
             try {
                 iface = Reflector.on("android.media.IAudioService$Stub").call("asInterface", binder);
             } catch (Exception e1) {
                 Slog.d(TAG, "Failed Android 16+ path, trying alternative: " + e1.getMessage());
-                
+
                 // Alternative path for older versions
                 try {
                     iface = Reflector.on("android.media.IAudioService").call("asInterface", binder);
                 } catch (Exception e2) {
                     Slog.d(TAG, "Failed alternative path: " + e2.getMessage());
-                    
+
                     // Last resort: try direct interface casting
                     try {
                         Class<?> stubClass = Class.forName("android.media.IAudioService$Stub");
@@ -59,7 +58,7 @@ public class IAudioServiceProxy extends BinderInvocationStub {
                     }
                 }
             }
-            
+
             if (iface != null) {
                 Slog.d(TAG, "Successfully obtained IAudioService interface");
                 return (IInterface) iface;
@@ -67,7 +66,7 @@ public class IAudioServiceProxy extends BinderInvocationStub {
                 Slog.e(TAG, "Reflection succeeded but returned null interface");
                 return null;
             }
-            
+
         } catch (Exception e) {
             Slog.e(TAG, "Failed to get IAudioService interface", e);
             return null;

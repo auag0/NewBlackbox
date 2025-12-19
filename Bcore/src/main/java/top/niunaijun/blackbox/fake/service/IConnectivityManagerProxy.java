@@ -3,22 +3,16 @@ package top.niunaijun.blackbox.fake.service;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Network;
-import android.net.LinkProperties;
 
-import java.lang.reflect.Method;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Array;
-import java.net.InetAddress;
-import java.util.ArrayList;
-import java.util.List;
+import java.lang.reflect.Method;
 
 import black.android.net.BRIConnectivityManagerStub;
 import black.android.os.BRServiceManager;
 import top.niunaijun.blackbox.fake.hook.BinderInvocationStub;
-import top.niunaijun.blackbox.fake.hook.ScanClass;
 import top.niunaijun.blackbox.fake.hook.MethodHook;
 import top.niunaijun.blackbox.fake.hook.ProxyMethod;
+import top.niunaijun.blackbox.fake.hook.ScanClass;
 import top.niunaijun.blackbox.utils.Slog;
 
 /**
@@ -68,14 +62,14 @@ public class IConnectivityManagerProxy extends BinderInvocationStub {
                     Class<?> networkInfoClass = Class.forName("android.net.NetworkInfo");
                     Constructor<?> constructor = networkInfoClass.getDeclaredConstructor(int.class, int.class, String.class, String.class);
                     constructor.setAccessible(true);
-                    
+
                     Object networkInfo = constructor.newInstance(type, subType, typeName, subTypeName);
-                    
+
                     // Set the detailed state using reflection
-                    Method setDetailedStateMethod = networkInfoClass.getDeclaredMethod("setDetailedState", 
-                        NetworkInfo.DetailedState.class, String.class, String.class);
+                    Method setDetailedStateMethod = networkInfoClass.getDeclaredMethod("setDetailedState",
+                            NetworkInfo.DetailedState.class, String.class, String.class);
                     setDetailedStateMethod.invoke(networkInfo, NetworkInfo.DetailedState.CONNECTED, null, null);
-                    
+
                     return networkInfo;
                 } catch (Exception e) {
                     Slog.w(TAG, "Failed to create NetworkInfo via reflection: " + e.getMessage());
@@ -99,29 +93,29 @@ public class IConnectivityManagerProxy extends BinderInvocationStub {
                 wifi.setDetailedState(NetworkInfo.DetailedState.CONNECTED, null, null);
                 NetworkInfo mobile = new NetworkInfo(ConnectivityManager.TYPE_MOBILE, 0, "MOBILE", "");
                 mobile.setDetailedState(NetworkInfo.DetailedState.CONNECTED, null, null);
-                return new NetworkInfo[] { wifi, mobile };
+                return new NetworkInfo[]{wifi, mobile};
             } else {
                 // On older API levels, use reflection to create NetworkInfo array
                 try {
                     Class<?> networkInfoClass = Class.forName("android.net.NetworkInfo");
                     Constructor<?> constructor = networkInfoClass.getDeclaredConstructor(int.class, int.class, String.class, String.class);
                     constructor.setAccessible(true);
-                    
+
                     // Create WiFi NetworkInfo
                     Object wifi = constructor.newInstance(ConnectivityManager.TYPE_WIFI, 0, "WIFI", "");
-                    Method setDetailedStateMethod = networkInfoClass.getDeclaredMethod("setDetailedState", 
-                        NetworkInfo.DetailedState.class, String.class, String.class);
+                    Method setDetailedStateMethod = networkInfoClass.getDeclaredMethod("setDetailedState",
+                            NetworkInfo.DetailedState.class, String.class, String.class);
                     setDetailedStateMethod.invoke(wifi, NetworkInfo.DetailedState.CONNECTED, null, null);
-                    
+
                     // Create Mobile NetworkInfo
                     Object mobile = constructor.newInstance(ConnectivityManager.TYPE_MOBILE, 0, "MOBILE", "");
                     setDetailedStateMethod.invoke(mobile, NetworkInfo.DetailedState.CONNECTED, null, null);
-                    
+
                     // Create array using reflection
                     Object[] networkInfoArray = (Object[]) java.lang.reflect.Array.newInstance(networkInfoClass, 2);
                     java.lang.reflect.Array.set(networkInfoArray, 0, wifi);
                     java.lang.reflect.Array.set(networkInfoArray, 1, mobile);
-                    
+
                     return networkInfoArray;
                 } catch (Exception e) {
                     Slog.w(TAG, "Failed to create NetworkInfo array via reflection: " + e.getMessage());
@@ -144,7 +138,7 @@ public class IConnectivityManagerProxy extends BinderInvocationStub {
             Constructor<?> constructor = networkCapabilitiesClass.getDeclaredConstructor();
             constructor.setAccessible(true);
             Object nc = constructor.newInstance();
-            
+
             // Add transport types using reflection to ensure compatibility
             try {
                 Method addTransportTypeMethod = nc.getClass().getMethod("addTransportType", int.class);
@@ -166,7 +160,7 @@ public class IConnectivityManagerProxy extends BinderInvocationStub {
             } catch (Exception e) {
                 Slog.w(TAG, "Could not add capabilities: " + e.getMessage());
             }
-            
+
             return nc;
         } catch (Exception e) {
             Slog.w(TAG, "Failed to create NetworkCapabilities via reflection: " + e.getMessage());
@@ -184,27 +178,26 @@ public class IConnectivityManagerProxy extends BinderInvocationStub {
             Constructor<?> constructor = linkPropertiesClass.getDeclaredConstructor();
             constructor.setAccessible(true);
             Object linkProperties = constructor.newInstance();
-            
+
             // Add DNS servers (Google DNS as fallback)
             java.util.List<java.net.InetAddress> dnsServers = new java.util.ArrayList<>();
             try {
                 dnsServers.add(java.net.InetAddress.getByName("8.8.8.8"));
                 dnsServers.add(java.net.InetAddress.getByName("8.8.4.4"));
-                
+
                 // Set DNS servers using reflection to ensure compatibility
                 Method setDnsServersMethod = linkProperties.getClass().getMethod("setDnsServers", java.util.List.class);
                 setDnsServersMethod.invoke(linkProperties, dnsServers);
             } catch (Exception e) {
                 Slog.w(TAG, "Could not set DNS servers: " + e.getMessage());
             }
-            
+
             return linkProperties;
         } catch (Exception e) {
             Slog.w(TAG, "Failed to create LinkProperties via reflection: " + e.getMessage());
             return null;
         }
     }
-
 
 
     @ProxyMethod("getNetworkInfo")
@@ -217,17 +210,17 @@ public class IConnectivityManagerProxy extends BinderInvocationStub {
                 if (result != null) {
                     return result;
                 }
-                
+
                 // If original method fails, create a basic NetworkInfo
                 Slog.d(TAG, "Creating fallback NetworkInfo for getNetworkInfo");
                 return createNetworkInfo(ConnectivityManager.TYPE_WIFI, 0, "WIFI", "");
-                
+
             } catch (Exception e) {
                 Slog.w(TAG, "Error in getNetworkInfo, creating fallback: " + e.getMessage());
                 return createNetworkInfo(ConnectivityManager.TYPE_WIFI, 0, "WIFI", "");
             }
         }
-        
+
         private Object createBasicNetworkInfo() {
             try {
                 // Use the universal NetworkInfo creation method
@@ -249,17 +242,17 @@ public class IConnectivityManagerProxy extends BinderInvocationStub {
                 if (result != null) {
                     return result;
                 }
-                
+
                 // If original method fails, create basic NetworkInfo array
                 Slog.d(TAG, "Creating fallback NetworkInfo array for getAllNetworkInfo");
                 return createNetworkInfoArray();
-                
+
             } catch (Exception e) {
                 Slog.w(TAG, "Error in getAllNetworkInfo, creating fallback: " + e.getMessage());
                 return createNetworkInfoArray();
             }
         }
-        
+
         private Object createNetworkInfoArray() {
             try {
                 // Use the universal NetworkInfo array creation method
@@ -282,7 +275,7 @@ public class IConnectivityManagerProxy extends BinderInvocationStub {
                     Object nc;
                     // Use the universal NetworkCapabilities creation method for all API levels
                     nc = IConnectivityManagerProxy.createNetworkCapabilities();
-                    
+
                     if (nc != null) {
                         Slog.d(TAG, "Created enhanced NetworkCapabilities for sandboxed app");
                         return nc;
@@ -345,7 +338,7 @@ public class IConnectivityManagerProxy extends BinderInvocationStub {
                 try {
                     // Create LinkProperties using the universal method for all API levels
                     Object linkProperties = IConnectivityManagerProxy.createLinkProperties();
-                    
+
                     if (linkProperties != null) {
                         Slog.d(TAG, "Created LinkProperties with DNS configuration for sandboxed app");
                         return linkProperties;
@@ -353,7 +346,7 @@ public class IConnectivityManagerProxy extends BinderInvocationStub {
                         Slog.w(TAG, "Failed to create LinkProperties, falling back to original method");
                         return method.invoke(who, args);
                     }
-                    
+
                 } catch (Exception e) {
                     Slog.w(TAG, "Error creating LinkProperties: " + e.getMessage());
                     return method.invoke(who, args);
@@ -428,17 +421,17 @@ public class IConnectivityManagerProxy extends BinderInvocationStub {
                     Slog.d(TAG, "requestNetwork succeeded via original method");
                     return result;
                 }
-                
+
                 // If original method fails, create a mock network request result
                 Slog.w(TAG, "requestNetwork failed, creating fallback result");
                 return createMockNetworkRequestResult();
-                
+
             } catch (Exception e) {
                 Slog.w(TAG, "Error in requestNetwork, creating fallback: " + e.getMessage());
                 return createMockNetworkRequestResult();
             }
         }
-        
+
         private Object createMockNetworkRequestResult() {
             try {
                 // Create a mock network request result
@@ -508,17 +501,17 @@ public class IConnectivityManagerProxy extends BinderInvocationStub {
                 if (result != null) {
                     return result;
                 }
-                
+
                 // If original method fails, create a basic NetworkInfo
                 Slog.d(TAG, "Creating fallback NetworkInfo for UID");
                 return createBasicNetworkInfo();
-                
+
             } catch (Exception e) {
                 Slog.w(TAG, "Error in getActiveNetworkInfoForUid, creating fallback: " + e.getMessage());
                 return createBasicNetworkInfo();
             }
         }
-        
+
         private Object createBasicNetworkInfo() {
             try {
                 // Use the universal NetworkInfo creation method
@@ -580,11 +573,11 @@ public class IConnectivityManagerProxy extends BinderInvocationStub {
                 if (result != null) {
                     return result;
                 }
-                
+
                 // If original method fails, return false (unmetered) to allow full access
                 Slog.d(TAG, "isActiveNetworkMetered failed, returning false for full access");
                 return false;
-                
+
             } catch (Exception e) {
                 Slog.w(TAG, "Error in isActiveNetworkMetered, returning false: " + e.getMessage());
                 return false;
@@ -604,7 +597,7 @@ public class IConnectivityManagerProxy extends BinderInvocationStub {
                 if (result != null) {
                     return result;
                 }
-                
+
                 // If original method fails, create a mock Network object
                 if (android.os.Build.VERSION.SDK_INT >= 21) {
                     try {
@@ -632,9 +625,9 @@ public class IConnectivityManagerProxy extends BinderInvocationStub {
                         Slog.w(TAG, "Failed to create fallback Network: " + e.getMessage());
                     }
                 }
-                
+
                 return null;
-                
+
             } catch (Exception e) {
                 Slog.w(TAG, "Error in getNetworkForType: " + e.getMessage());
                 return null;
@@ -692,17 +685,17 @@ public class IConnectivityManagerProxy extends BinderInvocationStub {
                 if (result != null) {
                     return result;
                 }
-                
+
                 // If original method fails, create a basic NetworkInfo
                 Slog.d(TAG, "Creating fallback NetworkInfo for Network parameter");
                 return createBasicNetworkInfo();
-                
+
             } catch (Exception e) {
                 Slog.w(TAG, "Error in getNetworkInfo with Network, creating fallback: " + e.getMessage());
                 return createBasicNetworkInfo();
             }
         }
-        
+
         private Object createBasicNetworkInfo() {
             try {
                 // Use the universal NetworkInfo creation method
@@ -726,17 +719,17 @@ public class IConnectivityManagerProxy extends BinderInvocationStub {
                 if (result != null) {
                     return result;
                 }
-                
+
                 // If original method fails, create a basic NetworkInfo
                 Slog.d(TAG, "Creating fallback NetworkInfo for int parameter");
                 return createBasicNetworkInfo();
-                
+
             } catch (Exception e) {
                 Slog.w(TAG, "Error in getNetworkInfo with int, creating fallback: " + e.getMessage());
                 return createBasicNetworkInfo();
             }
         }
-        
+
         private Object createBasicNetworkInfo() {
             try {
                 // Use the universal NetworkInfo creation method
@@ -760,17 +753,17 @@ public class IConnectivityManagerProxy extends BinderInvocationStub {
                 if (result != null) {
                     return result;
                 }
-                
+
                 // If original method fails, create a basic NetworkInfo
                 Slog.d(TAG, "Creating fallback NetworkInfo for String parameter");
                 return createBasicNetworkInfo();
-                
+
             } catch (Exception e) {
                 Slog.w(TAG, "Error in getNetworkInfo with String, creating fallback: " + e.getMessage());
                 return createBasicNetworkInfo();
             }
         }
-        
+
         private Object createBasicNetworkInfo() {
             try {
                 // Use the universal NetworkInfo creation method
@@ -794,17 +787,17 @@ public class IConnectivityManagerProxy extends BinderInvocationStub {
                 if (result != null) {
                     return result;
                 }
-                
+
                 // If original method fails, create a basic NetworkInfo
                 Slog.d(TAG, "Creating fallback NetworkInfo for String parameter (2)");
                 return createBasicNetworkInfo();
-                
+
             } catch (Exception e) {
                 Slog.w(TAG, "Error in getNetworkInfo with String (2), creating fallback: " + e.getMessage());
                 return createBasicNetworkInfo();
             }
         }
-        
+
         private Object createBasicNetworkInfo() {
             try {
                 // Use the universal NetworkInfo creation method
@@ -828,17 +821,17 @@ public class IConnectivityManagerProxy extends BinderInvocationStub {
                 if (result != null) {
                     return result;
                 }
-                
+
                 // If original method fails, create a basic NetworkInfo
                 Slog.d(TAG, "Creating fallback NetworkInfo for String parameter (3)");
                 return createBasicNetworkInfo();
-                
+
             } catch (Exception e) {
                 Slog.w(TAG, "Error in getNetworkInfo with String (3), creating fallback: " + e.getMessage());
                 return createBasicNetworkInfo();
             }
         }
-        
+
         private Object createBasicNetworkInfo() {
             try {
                 // Use the universal NetworkInfo creation method
@@ -862,17 +855,17 @@ public class IConnectivityManagerProxy extends BinderInvocationStub {
                 if (result != null) {
                     return result;
                 }
-                
+
                 // If original method fails, create a basic NetworkInfo
                 Slog.d(TAG, "Creating fallback NetworkInfo for String parameter (4)");
                 return createBasicNetworkInfo();
-                
+
             } catch (Exception e) {
                 Slog.w(TAG, "Error in getNetworkInfo with String (4), creating fallback: " + e.getMessage());
                 return createBasicNetworkInfo();
             }
         }
-        
+
         private Object createBasicNetworkInfo() {
             try {
                 // Use the universal NetworkInfo creation method
@@ -896,17 +889,17 @@ public class IConnectivityManagerProxy extends BinderInvocationStub {
                 if (result != null) {
                     return result;
                 }
-                
+
                 // If original method fails, create a basic NetworkInfo
                 Slog.d(TAG, "Creating fallback NetworkInfo for String parameter (5)");
                 return createBasicNetworkInfo();
-                
+
             } catch (Exception e) {
                 Slog.w(TAG, "Error in getNetworkInfo with String (5), creating fallback: " + e.getMessage());
                 return createBasicNetworkInfo();
             }
         }
-        
+
         private Object createBasicNetworkInfo() {
             try {
                 // Use the universal NetworkInfo creation method
@@ -930,17 +923,17 @@ public class IConnectivityManagerProxy extends BinderInvocationStub {
                 if (result != null) {
                     return result;
                 }
-                
+
                 // If original method fails, create a basic NetworkInfo
                 Slog.d(TAG, "Creating fallback NetworkInfo for String parameter (6)");
                 return createBasicNetworkInfo();
-                
+
             } catch (Exception e) {
                 Slog.w(TAG, "Error in getNetworkInfo with String (6), creating fallback: " + e.getMessage());
                 return createBasicNetworkInfo();
             }
         }
-        
+
         private Object createBasicNetworkInfo() {
             try {
                 // Use the universal NetworkInfo creation method
@@ -964,17 +957,17 @@ public class IConnectivityManagerProxy extends BinderInvocationStub {
                 if (result != null) {
                     return result;
                 }
-                
+
                 // If original method fails, create a basic NetworkInfo
                 Slog.d(TAG, "Creating fallback NetworkInfo for String parameter (7)");
                 return createBasicNetworkInfo();
-                
+
             } catch (Exception e) {
                 Slog.w(TAG, "Error in getNetworkInfo with String (7), creating fallback: " + e.getMessage());
                 return createBasicNetworkInfo();
             }
         }
-        
+
         private Object createBasicNetworkInfo() {
             try {
                 // Use the universal NetworkInfo creation method
@@ -998,17 +991,17 @@ public class IConnectivityManagerProxy extends BinderInvocationStub {
                 if (result != null) {
                     return result;
                 }
-                
+
                 // If original method fails, create a basic NetworkInfo
                 Slog.d(TAG, "Creating fallback NetworkInfo for String parameter (8)");
                 return createBasicNetworkInfo();
-                
+
             } catch (Exception e) {
                 Slog.w(TAG, "Error in getNetworkInfo with String (8), creating fallback: " + e.getMessage());
                 return createBasicNetworkInfo();
             }
         }
-        
+
         private Object createBasicNetworkInfo() {
             try {
                 // Use the universal NetworkInfo creation method
@@ -1032,17 +1025,17 @@ public class IConnectivityManagerProxy extends BinderInvocationStub {
                 if (result != null) {
                     return result;
                 }
-                
+
                 // If original method fails, create a basic NetworkInfo
                 Slog.d(TAG, "Creating fallback NetworkInfo for String parameter (9)");
                 return createBasicNetworkInfo();
-                
+
             } catch (Exception e) {
                 Slog.w(TAG, "Error in getNetworkInfo with String (9), creating fallback: " + e.getMessage());
                 return createBasicNetworkInfo();
             }
         }
-        
+
         private Object createBasicNetworkInfo() {
             try {
                 // Use the universal NetworkInfo creation method
@@ -1066,17 +1059,17 @@ public class IConnectivityManagerProxy extends BinderInvocationStub {
                 if (result != null) {
                     return result;
                 }
-                
+
                 // If original method fails, create a basic NetworkInfo
                 Slog.d(TAG, "Creating fallback NetworkInfo for String parameter (10)");
                 return createBasicNetworkInfo();
-                
+
             } catch (Exception e) {
                 Slog.w(TAG, "Error in getNetworkInfo with String (10), creating fallback: " + e.getMessage());
                 return createBasicNetworkInfo();
             }
         }
-        
+
         private Object createBasicNetworkInfo() {
             try {
                 // Use the universal NetworkInfo creation method
@@ -1100,17 +1093,17 @@ public class IConnectivityManagerProxy extends BinderInvocationStub {
                 if (result != null) {
                     return result;
                 }
-                
+
                 // If original method fails, create a basic NetworkInfo
                 Slog.d(TAG, "Creating fallback NetworkInfo for String parameter (11)");
                 return createBasicNetworkInfo();
-                
+
             } catch (Exception e) {
                 Slog.w(TAG, "Error in getNetworkInfo with String (11), creating fallback: " + e.getMessage());
                 return createBasicNetworkInfo();
             }
         }
-        
+
         private Object createBasicNetworkInfo() {
             try {
                 // Use the universal NetworkInfo creation method
@@ -1134,17 +1127,17 @@ public class IConnectivityManagerProxy extends BinderInvocationStub {
                 if (result != null) {
                     return result;
                 }
-                
+
                 // If original method fails, create a basic NetworkInfo
                 Slog.d(TAG, "Creating fallback NetworkInfo for String parameter (12)");
                 return createBasicNetworkInfo();
-                
+
             } catch (Exception e) {
                 Slog.w(TAG, "Error in getNetworkInfo with String (12), creating fallback: " + e.getMessage());
                 return createBasicNetworkInfo();
             }
         }
-        
+
         private Object createBasicNetworkInfo() {
             try {
                 // Use the universal NetworkInfo creation method
@@ -1168,17 +1161,17 @@ public class IConnectivityManagerProxy extends BinderInvocationStub {
                 if (result != null) {
                     return result;
                 }
-                
+
                 // If original method fails, create a basic NetworkInfo
                 Slog.d(TAG, "Creating fallback NetworkInfo for String parameter (13)");
                 return createBasicNetworkInfo();
-                
+
             } catch (Exception e) {
                 Slog.w(TAG, "Error in getNetworkInfo with String (13), creating fallback: " + e.getMessage());
                 return createBasicNetworkInfo();
             }
         }
-        
+
         private Object createBasicNetworkInfo() {
             try {
                 // Use the universal NetworkInfo creation method
@@ -1202,17 +1195,17 @@ public class IConnectivityManagerProxy extends BinderInvocationStub {
                 if (result != null) {
                     return result;
                 }
-                
+
                 // If original method fails, create a basic NetworkInfo
                 Slog.d(TAG, "Creating fallback NetworkInfo for String parameter (14)");
                 return createBasicNetworkInfo();
-                
+
             } catch (Exception e) {
                 Slog.w(TAG, "Error in getNetworkInfo with String (14), creating fallback: " + e.getMessage());
                 return createBasicNetworkInfo();
             }
         }
-        
+
         private Object createBasicNetworkInfo() {
             try {
                 // Use the universal NetworkInfo creation method
@@ -1236,17 +1229,17 @@ public class IConnectivityManagerProxy extends BinderInvocationStub {
                 if (result != null) {
                     return result;
                 }
-                
+
                 // If original method fails, create a basic NetworkInfo
                 Slog.d(TAG, "Creating fallback NetworkInfo for String parameter (15)");
                 return createBasicNetworkInfo();
-                
+
             } catch (Exception e) {
                 Slog.w(TAG, "Error in getNetworkInfo with String (15), creating fallback: " + e.getMessage());
                 return createBasicNetworkInfo();
             }
         }
-        
+
         private Object createBasicNetworkInfo() {
             try {
                 // Use the universal NetworkInfo creation method
@@ -1270,17 +1263,17 @@ public class IConnectivityManagerProxy extends BinderInvocationStub {
                 if (result != null) {
                     return result;
                 }
-                
+
                 // If original method fails, create a basic NetworkInfo
                 Slog.d(TAG, "Creating fallback NetworkInfo for String parameter (16)");
                 return createBasicNetworkInfo();
-                
+
             } catch (Exception e) {
                 Slog.w(TAG, "Error in getNetworkInfo with String (16), creating fallback: " + e.getMessage());
                 return createBasicNetworkInfo();
             }
         }
-        
+
         private Object createBasicNetworkInfo() {
             try {
                 // Use the universal NetworkInfo creation method
@@ -1304,17 +1297,17 @@ public class IConnectivityManagerProxy extends BinderInvocationStub {
                 if (result != null) {
                     return result;
                 }
-                
+
                 // If original method fails, create a basic NetworkInfo
                 Slog.d(TAG, "Creating fallback NetworkInfo for String parameter (17)");
                 return createBasicNetworkInfo();
-                
+
             } catch (Exception e) {
                 Slog.w(TAG, "Error in getNetworkInfo with String (17), creating fallback: " + e.getMessage());
                 return createBasicNetworkInfo();
             }
         }
-        
+
         private Object createBasicNetworkInfo() {
             try {
                 // Use the universal NetworkInfo creation method
@@ -1338,17 +1331,17 @@ public class IConnectivityManagerProxy extends BinderInvocationStub {
                 if (result != null) {
                     return result;
                 }
-                
+
                 // If original method fails, create a basic NetworkInfo
                 Slog.d(TAG, "Creating fallback NetworkInfo for String parameter (18)");
                 return createBasicNetworkInfo();
-                
+
             } catch (Exception e) {
                 Slog.w(TAG, "Error in getNetworkInfo with String (18), creating fallback: " + e.getMessage());
                 return createBasicNetworkInfo();
             }
         }
-        
+
         private Object createBasicNetworkInfo() {
             try {
                 // Use the universal NetworkInfo creation method
@@ -1372,17 +1365,17 @@ public class IConnectivityManagerProxy extends BinderInvocationStub {
                 if (result != null) {
                     return result;
                 }
-                
+
                 // If original method fails, create a basic NetworkInfo
                 Slog.d(TAG, "Creating fallback NetworkInfo for String parameter (19)");
                 return createBasicNetworkInfo();
-                
+
             } catch (Exception e) {
                 Slog.w(TAG, "Error in getNetworkInfo with String (19), creating fallback: " + e.getMessage());
                 return createBasicNetworkInfo();
             }
         }
-        
+
         private Object createBasicNetworkInfo() {
             try {
                 // Use the universal NetworkInfo creation method

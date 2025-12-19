@@ -8,7 +8,6 @@ import black.android.hardware.display.BRDisplayManagerGlobal;
 import top.niunaijun.blackbox.fake.hook.ClassInvocationStub;
 import top.niunaijun.blackbox.fake.hook.MethodHook;
 import top.niunaijun.blackbox.fake.hook.ProxyMethod;
-import top.niunaijun.blackbox.fake.service.base.PkgMethodProxy;
 import top.niunaijun.blackbox.utils.MethodParameterUtils;
 
 /**

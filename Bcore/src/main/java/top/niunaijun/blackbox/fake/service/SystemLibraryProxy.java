@@ -40,19 +40,19 @@ public class SystemLibraryProxy extends ClassInvocationStub {
             if (args != null && args.length > 0 && args[0] instanceof String) {
                 String libraryName = (String) args[0];
                 Slog.d(TAG, "System: loadLibrary called for: " + libraryName);
-                
+
                 // Handle common missing libraries
                 if (libraryName.equals("c++_shared") || libraryName.contains("c++")) {
                     Slog.d(TAG, "System: Intercepting c++ library load, returning success");
                     return null; // Return null to indicate success
                 }
-                
+
                 if (libraryName.contains("flutter") || libraryName.contains("meemo")) {
                     Slog.d(TAG, "System: Intercepting Flutter/Meemo library load, returning success");
                     return null; // Return null to indicate success
                 }
             }
-            
+
             // For other libraries, proceed normally
             return method.invoke(who, args);
         }
@@ -66,19 +66,19 @@ public class SystemLibraryProxy extends ClassInvocationStub {
             if (args != null && args.length > 0 && args[0] instanceof String) {
                 String libraryPath = (String) args[0];
                 Slog.d(TAG, "System: load called for: " + libraryPath);
-                
+
                 // Handle common missing libraries
                 if (libraryPath.contains("libc++_shared.so") || libraryPath.contains("c++_shared")) {
                     Slog.d(TAG, "System: Intercepting libc++_shared.so load, returning success");
                     return null; // Return null to indicate success
                 }
-                
+
                 if (libraryPath.contains("flutter") || libraryPath.contains("meemo")) {
                     Slog.d(TAG, "System: Intercepting Flutter/Meemo library load, returning success");
                     return null; // Return null to indicate success
                 }
             }
-            
+
             // For other libraries, proceed normally
             return method.invoke(who, args);
         }

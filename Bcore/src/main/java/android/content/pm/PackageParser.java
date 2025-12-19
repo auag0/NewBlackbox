@@ -67,7 +67,8 @@ public class PackageParser {
         String tag;
         TypedArray sa;
 
-        ParsePackageItemArgs(final Package owner, final String[] outError, final int nameRes, final int labelRes, final int iconRes, final int logoRes, final int bannerRes) { throw new RuntimeException("Stub!");
+        ParsePackageItemArgs(final Package owner, final String[] outError, final int nameRes, final int labelRes, final int iconRes, final int logoRes, final int bannerRes) {
+            throw new RuntimeException("Stub!");
         }
     }
 
@@ -90,7 +91,9 @@ public class PackageParser {
         public final int installLocation;
         public final VerifierInfo[] verifiers;
 
-        /** Names of any split APKs, ordered by parsed splitName */
+        /**
+         * Names of any split APKs, ordered by parsed splitName
+         */
         public final String[] splitNames;
 
         /**
@@ -100,14 +103,22 @@ public class PackageParser {
          */
         public final String codePath;
 
-        /** Path of base APK */
+        /**
+         * Path of base APK
+         */
         public final String baseCodePath;
-        /** Paths of any split APKs, ordered by parsed splitName */
+        /**
+         * Paths of any split APKs, ordered by parsed splitName
+         */
         public final String[] splitCodePaths;
 
-        /** Revision code of base APK */
+        /**
+         * Revision code of base APK
+         */
         public final int baseRevisionCode;
-        /** Revision codes of any split APKs, ordered by parsed splitName */
+        /**
+         * Revision codes of any split APKs, ordered by parsed splitName
+         */
         public final int[] splitRevisionCodes;
 
         public final boolean coreApp;
@@ -240,8 +251,8 @@ public class PackageParser {
      * file, including package name, split name, and install location.
      *
      * @param apkFile path to a single APK
-     * @param flags optional parse flags, such as
-     *            {@link #PARSE_COLLECT_CERTIFICATES}
+     * @param flags   optional parse flags, such as
+     *                {@link #PARSE_COLLECT_CERTIFICATES}
      */
     public static ApkLite parseApkLite(final File apkFile, final int flags) throws PackageParserException {
         throw new RuntimeException("Stub!");
@@ -255,7 +266,9 @@ public class PackageParser {
 
         public String packageName;
 
-        /** Names of any split APKs, ordered by parsed splitName */
+        /**
+         * Names of any split APKs, ordered by parsed splitName
+         */
         public String[] splitNames;
 
         // TODO: work towards making these paths invariant
@@ -269,22 +282,32 @@ public class PackageParser {
          */
         public String codePath;
 
-        /** Path of base APK */
+        /**
+         * Path of base APK
+         */
         public String baseCodePath;
-        /** Paths of any split APKs, ordered by parsed splitName */
+        /**
+         * Paths of any split APKs, ordered by parsed splitName
+         */
         public String[] splitCodePaths;
 
-        /** Revision code of base APK */
+        /**
+         * Revision code of base APK
+         */
         public int baseRevisionCode;
-        /** Revision codes of any split APKs, ordered by parsed splitName */
+        /**
+         * Revision codes of any split APKs, ordered by parsed splitName
+         */
         public int[] splitRevisionCodes;
 
-        /** Flags of any split APKs; ordered by parsed splitName */
+        /**
+         * Flags of any split APKs; ordered by parsed splitName
+         */
         public int[] splitFlags;
 
         /**
          * Private flags of any split APKs; ordered by parsed splitName.
-         *
+         * <p>
          * {@hide}
          */
         public int[] splitPrivateFlags;
@@ -397,7 +420,7 @@ public class PackageParser {
 
         /**
          * The install time abi override for this package, if any.
-         *
+         * <p>
          * TODO: This seems like a horrible place to put the abiOverride because
          * this isn't something the packageParser parsers. However, this fits in with
          * the rest of the PackageManager where package scanning randomly pushes

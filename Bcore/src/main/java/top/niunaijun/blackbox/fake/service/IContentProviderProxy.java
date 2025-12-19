@@ -5,8 +5,8 @@ import java.lang.reflect.Method;
 import top.niunaijun.blackbox.fake.hook.ClassInvocationStub;
 import top.niunaijun.blackbox.fake.hook.MethodHook;
 import top.niunaijun.blackbox.fake.hook.ProxyMethod;
-import top.niunaijun.blackbox.utils.Slog;
 import top.niunaijun.blackbox.utils.AttributionSourceUtils;
+import top.niunaijun.blackbox.utils.Slog;
 
 /**
  * IContentProvider Proxy to handle AttributionSource UID issues on Android 12+
@@ -44,7 +44,7 @@ public class IContentProviderProxy extends ClassInvocationStub {
             try {
                 // Fix AttributionSource in args before calling original method
                 AttributionSourceUtils.fixAttributionSourceInArgs(args);
-                
+
                 // Call original method
                 return method.invoke(who, args);
             } catch (Exception e) {
@@ -63,7 +63,7 @@ public class IContentProviderProxy extends ClassInvocationStub {
             try {
                 // Fix AttributionSource in args before calling original method
                 AttributionSourceUtils.fixAttributionSourceInArgs(args);
-                
+
                 // Call original method
                 return method.invoke(who, args);
             } catch (Exception e) {
@@ -82,7 +82,7 @@ public class IContentProviderProxy extends ClassInvocationStub {
             try {
                 // Fix AttributionSource in args before calling original method
                 AttributionSourceUtils.fixAttributionSourceInArgs(args);
-                
+
                 // Call original method
                 return method.invoke(who, args);
             } catch (Exception e) {
@@ -101,7 +101,7 @@ public class IContentProviderProxy extends ClassInvocationStub {
             try {
                 // Fix AttributionSource in args before calling original method
                 AttributionSourceUtils.fixAttributionSourceInArgs(args);
-                
+
                 // Call original method
                 return method.invoke(who, args);
             } catch (Exception e) {
@@ -120,7 +120,7 @@ public class IContentProviderProxy extends ClassInvocationStub {
             try {
                 // Fix AttributionSource in args before calling original method
                 AttributionSourceUtils.fixAttributionSourceInArgs(args);
-                
+
                 // Call original method
                 return method.invoke(who, args);
             } catch (SecurityException e) {
@@ -147,7 +147,7 @@ public class IContentProviderProxy extends ClassInvocationStub {
             try {
                 // Fix AttributionSource in args before calling original method
                 AttributionSourceUtils.fixAttributionSourceInArgs(args);
-                
+
                 // Call original method
                 return method.invoke(who, args);
             } catch (SecurityException e) {
@@ -174,7 +174,7 @@ public class IContentProviderProxy extends ClassInvocationStub {
             try {
                 // Fix AttributionSource in args before calling original method
                 AttributionSourceUtils.fixAttributionSourceInArgs(args);
-                
+
                 // Call original method
                 return method.invoke(who, args);
             } catch (SecurityException e) {

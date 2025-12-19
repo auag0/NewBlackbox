@@ -21,7 +21,6 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 
 import top.niunaijun.blackbox.BlackBoxCore;
-import top.niunaijun.blackbox.app.BActivityThread;
 import top.niunaijun.blackbox.app.configuration.AppLifecycleCallback;
 import top.niunaijun.blackbox.utils.Reflector;
 
@@ -66,10 +65,10 @@ public class BaseInstrumentationDelegate extends Instrumentation {
                 if (results != null && !results.isEmpty()) {
                     // Use sendStatus to send results (available on all Android versions)
                     mBaseInstrumentation.sendStatus(0, results);
-                    
+
                     // Alternative: Store results in a static map for later retrieval
                     storeResultsForOlderVersions(results);
-                    
+
                     // Alternative: Use SharedPreferences to store results
                     storeResultsInPreferences(results);
                 }
@@ -78,7 +77,7 @@ public class BaseInstrumentationDelegate extends Instrumentation {
             }
         }
     }
-    
+
     /**
      * Store results in a static map for older Android versions
      */
@@ -87,17 +86,17 @@ public class BaseInstrumentationDelegate extends Instrumentation {
             // Use reflection to access a static results storage
             Class<?> resultsStorageClass = Class.forName("top.niunaijun.blackbox.utils.ResultsStorage");
             java.lang.reflect.Method storeMethod = resultsStorageClass.getMethod("storeResults", String.class, Bundle.class);
-            
+
             // Generate a unique key for these results
             String resultKey = "results_" + System.currentTimeMillis() + "_" + android.os.Process.myPid();
             storeMethod.invoke(null, resultKey, results);
-            
+
             android.util.Log.d("BaseInstrumentationDelegate", "Stored results with key: " + resultKey);
         } catch (Exception e) {
             android.util.Log.w("BaseInstrumentationDelegate", "Failed to store results in static storage: " + e.getMessage());
         }
     }
-    
+
     /**
      * Store results in SharedPreferences for older Android versions
      */
@@ -107,7 +106,7 @@ public class BaseInstrumentationDelegate extends Instrumentation {
             if (context != null) {
                 android.content.SharedPreferences prefs = context.getSharedPreferences("instrumentation_results", Context.MODE_PRIVATE);
                 android.content.SharedPreferences.Editor editor = prefs.edit();
-                
+
                 // Convert Bundle to key-value pairs and store in preferences
                 for (String key : results.keySet()) {
                     Object value = results.get(key);
@@ -123,11 +122,11 @@ public class BaseInstrumentationDelegate extends Instrumentation {
                         editor.putFloat(key, (Float) value);
                     }
                 }
-                
+
                 // Add timestamp for result identification
                 editor.putLong("timestamp", System.currentTimeMillis());
                 editor.putInt("pid", android.os.Process.myPid());
-                
+
                 editor.apply();
                 android.util.Log.d("BaseInstrumentationDelegate", "Stored results in SharedPreferences");
             }

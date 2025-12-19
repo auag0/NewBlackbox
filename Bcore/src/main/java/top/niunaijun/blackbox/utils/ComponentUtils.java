@@ -1,5 +1,7 @@
 package top.niunaijun.blackbox.utils;
 
+import static android.content.pm.ActivityInfo.LAUNCH_SINGLE_INSTANCE;
+
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -9,9 +11,6 @@ import android.content.pm.ProviderInfo;
 import java.util.Objects;
 
 import top.niunaijun.blackbox.BlackBoxCore;
-import top.niunaijun.blackbox.app.BActivityThread;
-
-import static android.content.pm.ActivityInfo.LAUNCH_SINGLE_INSTANCE;
 
 public class ComponentUtils {
 

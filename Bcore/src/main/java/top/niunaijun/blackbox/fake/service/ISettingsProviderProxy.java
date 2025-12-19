@@ -1,13 +1,7 @@
 package top.niunaijun.blackbox.fake.service;
 
-import android.os.Bundle;
-import android.provider.Settings;
-import android.util.Log;
-
 import java.lang.reflect.Method;
 
-import top.niunaijun.blackbox.BlackBoxCore;
-import top.niunaijun.blackbox.app.BActivityThread;
 import top.niunaijun.blackbox.fake.hook.ClassInvocationStub;
 import top.niunaijun.blackbox.fake.hook.MethodHook;
 import top.niunaijun.blackbox.fake.hook.ProxyMethod;
@@ -51,7 +45,7 @@ public class ISettingsProviderProxy extends ClassInvocationStub {
                         return "true"; // Return safe default for feature flags
                     }
                 }
-                
+
                 // Try to call the original method
                 return method.invoke(who, args);
             } catch (Exception e) {
@@ -78,7 +72,7 @@ public class ISettingsProviderProxy extends ClassInvocationStub {
                         return "true"; // Return safe default for feature flags
                     }
                 }
-                
+
                 // Try to call the original method
                 return method.invoke(who, args);
             } catch (Exception e) {

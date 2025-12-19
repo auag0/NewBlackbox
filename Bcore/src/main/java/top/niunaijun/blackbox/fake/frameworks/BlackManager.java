@@ -23,7 +23,7 @@ public abstract class BlackManager<Service extends IInterface> {
     private long mLastServiceCreationTime = 0;
     private static final long RETRY_TIMEOUT_MS = 2000; // Shorter timeout
     private static final long MIN_SERVICE_CREATION_INTERVAL_MS = 50; // Shorter interval
-    
+
     // Global service failure tracking to prevent cascade failures
     private static final AtomicInteger globalServiceFailureCount = new AtomicInteger(0);
     private static final long GLOBAL_FAILURE_RESET_INTERVAL_MS = 30000; // 30 seconds
@@ -61,20 +61,20 @@ public abstract class BlackManager<Service extends IInterface> {
                 markServiceCreationFailed();
                 return null;
             }
-            
+
             // Check if binder is alive before proceeding
             if (!binder.isBinderAlive()) {
                 Log.w(TAG, "Binder is not alive for service: " + getServiceName());
                 markServiceCreationFailed();
                 return null;
             }
-            
+
             String stubClassName = getTClass().getName() + "$Stub";
             Log.d(TAG, "Creating service for: " + stubClassName);
-            
+
             mService = Reflector.on(stubClassName).method("asInterface", IBinder.class)
                     .call(binder);
-            
+
             if (mService != null) {
                 // Additional health check
                 try {
@@ -90,7 +90,7 @@ public abstract class BlackManager<Service extends IInterface> {
                     markServiceCreationFailed();
                     return null;
                 }
-                
+
                 final Service serviceRef = mService; // Capture reference for death recipient
                 try {
                     serviceRef.asBinder().linkToDeath(new IBinder.DeathRecipient() {
@@ -111,7 +111,7 @@ public abstract class BlackManager<Service extends IInterface> {
                     Log.w(TAG, "Error linking death recipient for " + getServiceName(), e);
                     // Continue anyway, the service might still work
                 }
-                
+
                 Log.d(TAG, "Successfully created service: " + getServiceName());
                 mServiceCreationFailed.set(false); // Reset failure flag on success
                 mLastServiceCreationTime = currentTime; // Update creation time
@@ -119,7 +119,7 @@ public abstract class BlackManager<Service extends IInterface> {
                 Log.w(TAG, "Failed to create service instance for: " + getServiceName());
                 markServiceCreationFailed();
             }
-            
+
             return mService;
         } catch (Throwable e) {
             Log.e(TAG, "Error creating service for " + getServiceName(), e);
@@ -132,7 +132,7 @@ public abstract class BlackManager<Service extends IInterface> {
         mServiceCreationFailed.set(true);
         mLastRetryTime = System.currentTimeMillis();
     }
-    
+
     /**
      * Clear the cached service - call this when the service dies
      */
@@ -140,7 +140,7 @@ public abstract class BlackManager<Service extends IInterface> {
         mService = null;
         Log.d(TAG, "Cleared service cache for " + getServiceName());
     }
-    
+
     /**
      * Check if the service is healthy and available
      */

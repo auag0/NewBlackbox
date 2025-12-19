@@ -5,8 +5,8 @@ import java.lang.reflect.Method;
 import top.niunaijun.blackbox.fake.hook.ClassInvocationStub;
 import top.niunaijun.blackbox.fake.hook.MethodHook;
 import top.niunaijun.blackbox.fake.hook.ProxyMethod;
-import top.niunaijun.blackbox.utils.Slog;
 import top.niunaijun.blackbox.utils.AttributionSourceUtils;
+import top.niunaijun.blackbox.utils.Slog;
 
 /**
  * ISystemSensorManager Proxy to handle AttributionSource UID issues on Android 12+
@@ -44,7 +44,7 @@ public class ISystemSensorManagerProxy extends ClassInvocationStub {
             try {
                 // Fix AttributionSource in args before calling original method
                 AttributionSourceUtils.fixAttributionSourceInArgs(args);
-                
+
                 // Call original method
                 return method.invoke(who, args);
             } catch (SecurityException e) {
@@ -71,7 +71,7 @@ public class ISystemSensorManagerProxy extends ClassInvocationStub {
             try {
                 // Fix AttributionSource in args before calling original method
                 AttributionSourceUtils.fixAttributionSourceInArgs(args);
-                
+
                 // Call original method
                 return method.invoke(who, args);
             } catch (Exception e) {
@@ -89,10 +89,10 @@ public class ISystemSensorManagerProxy extends ClassInvocationStub {
         try {
             // Try to create a safe SystemSensorManager using reflection
             Class<?> sensorManagerClass = Class.forName("android.hardware.SystemSensorManager");
-            
+
             // Try different constructor signatures
             Object sensorManager = null;
-            
+
             try {
                 // Try default constructor
                 java.lang.reflect.Constructor<?> constructor = sensorManagerClass.getDeclaredConstructor();
@@ -103,7 +103,7 @@ public class ISystemSensorManagerProxy extends ClassInvocationStub {
                 Slog.w(TAG, "Could not create safe SystemSensorManager: " + e.getMessage());
                 return null;
             }
-            
+
             return sensorManager;
         } catch (Exception e) {
             Slog.w(TAG, "Error creating safe SystemSensorManager: " + e.getMessage());

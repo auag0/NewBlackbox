@@ -1,5 +1,7 @@
 package top.niunaijun.blackbox.fake.service;
 
+import static android.content.pm.PackageManager.GET_META_DATA;
+
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -21,8 +23,6 @@ import top.niunaijun.blackbox.utils.MethodParameterUtils;
 import top.niunaijun.blackbox.utils.Slog;
 import top.niunaijun.blackbox.utils.compat.BuildCompat;
 import top.niunaijun.blackbox.utils.compat.StartActivityCompat;
-
-import static android.content.pm.PackageManager.GET_META_DATA;
 
 /**
  * updated by alex5402 on 4/21/21.
@@ -50,7 +50,7 @@ public class ActivityManagerCommonProxy {
             }
             if (ComponentUtils.isRequestInstall(intent)) {
                 File file = FileProviderHandler.convertFile(BActivityThread.getApplication(), intent.getData());
-                
+
                 // Check if this is an attempt to install BlackBox app
                 if (file != null && file.exists()) {
                     try {
@@ -68,7 +68,7 @@ public class ActivityManagerCommonProxy {
                         Slog.w(TAG, "Could not verify if this is BlackBox app: " + e.getMessage());
                     }
                 }
-                
+
                 if (BlackBoxCore.get().requestInstallPackage(file, BActivityThread.getUserId())) {
                     return 0;
                 }

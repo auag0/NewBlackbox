@@ -52,10 +52,10 @@ public class IMiuiSecurityManagerProxy extends BinderInvocationStub {
 
     public boolean isEnable() {
         // Only enable on MIUI/Xiaomi systems
-        return BuildCompat.isMIUI() || 
-               Build.MANUFACTURER.toLowerCase().contains("xiaomi") ||
-               Build.BRAND.toLowerCase().contains("xiaomi") ||
-               Build.DISPLAY.toLowerCase().contains("hyperos");
+        return BuildCompat.isMIUI() ||
+                Build.MANUFACTURER.toLowerCase().contains("xiaomi") ||
+                Build.BRAND.toLowerCase().contains("xiaomi") ||
+                Build.DISPLAY.toLowerCase().contains("hyperos");
     }
 
     @Override

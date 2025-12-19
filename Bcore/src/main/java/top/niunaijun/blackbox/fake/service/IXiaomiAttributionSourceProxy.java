@@ -5,9 +5,9 @@ import java.lang.reflect.Method;
 import top.niunaijun.blackbox.fake.hook.ClassInvocationStub;
 import top.niunaijun.blackbox.fake.hook.MethodHook;
 import top.niunaijun.blackbox.fake.hook.ProxyMethod;
-import top.niunaijun.blackbox.utils.Slog;
-import top.niunaijun.blackbox.utils.AttributionSourceUtils;
 import top.niunaijun.blackbox.util.XiaomiDeviceDetector;
+import top.niunaijun.blackbox.utils.AttributionSourceUtils;
+import top.niunaijun.blackbox.utils.Slog;
 
 /**
  * IXiaomiAttributionSource Proxy to handle MIUI-specific UID issues on Android 12+
@@ -30,7 +30,7 @@ public class IXiaomiAttributionSourceProxy extends ClassInvocationStub {
     protected void inject(Object base, Object proxy) {
         // This proxy handles Xiaomi-specific AttributionSource issues globally
         if (XiaomiDeviceDetector.isXiaomiDevice()) {
-            Slog.d(TAG, "IXiaomiAttributionSource proxy initialized for MIUI UID mismatch prevention on " + 
+            Slog.d(TAG, "IXiaomiAttributionSource proxy initialized for MIUI UID mismatch prevention on " +
                     XiaomiDeviceDetector.getDeviceModel() + " (MIUI " + XiaomiDeviceDetector.getMiuiVersion() + ")");
         } else {
             Slog.d(TAG, "IXiaomiAttributionSource proxy initialized for MIUI UID mismatch prevention");
@@ -50,7 +50,7 @@ public class IXiaomiAttributionSourceProxy extends ClassInvocationStub {
             try {
                 // Fix AttributionSource in args before calling original method
                 AttributionSourceUtils.fixAttributionSourceInArgs(args);
-                
+
                 // Call original method
                 return method.invoke(who, args);
             } catch (SecurityException e) {
@@ -99,12 +99,12 @@ public class IXiaomiAttributionSourceProxy extends ClassInvocationStub {
             try {
                 // Call original method first
                 Object result = method.invoke(who, args);
-                
+
                 // Fix the UID of the created object for Xiaomi compatibility
                 if (result != null) {
                     AttributionSourceUtils.fixAttributionSourceUid(result);
                 }
-                
+
                 return result;
             } catch (Exception e) {
                 Slog.w(TAG, "Error in Xiaomi fromParcel hook: " + e.getMessage());

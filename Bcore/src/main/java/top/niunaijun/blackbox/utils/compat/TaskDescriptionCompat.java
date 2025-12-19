@@ -1,7 +1,6 @@
 package top.niunaijun.blackbox.utils.compat;
 
 import android.app.ActivityManager;
-import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
@@ -9,8 +8,6 @@ import android.graphics.drawable.Drawable;
 import java.util.Locale;
 
 import top.niunaijun.blackbox.BlackBoxCore;
-import top.niunaijun.blackbox.app.BActivityThread;
-import top.niunaijun.blackbox.utils.DrawableUtils;
 
 public class TaskDescriptionCompat {
     public static ActivityManager.TaskDescription fix(ActivityManager.TaskDescription td) {

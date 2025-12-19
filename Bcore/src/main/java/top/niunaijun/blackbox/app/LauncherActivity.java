@@ -6,16 +6,15 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.view.animation.OvershootInterpolator;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
 import top.niunaijun.blackbox.BlackBoxCore;
 import top.niunaijun.blackbox.R;
 import top.niunaijun.blackbox.utils.Slog;
-import android.util.Log;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.view.animation.OvershootInterpolator;
 
 /**
  * LauncherActivity - Handles the launch of virtual apps
@@ -49,14 +48,14 @@ public class LauncherActivity extends Activity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         try {
             super.onCreate(savedInstanceState);
-            
+
             Intent intent = getIntent();
             if (intent == null) {
                 Slog.w(TAG, "Intent is null, finishing activity");
                 finish();
                 return;
             }
-            
+
             Intent launchIntent = intent.getParcelableExtra(KEY_INTENT);
             String packageName = intent.getStringExtra(KEY_PKG);
             int userId = intent.getIntExtra(KEY_USER_ID, 0);
@@ -71,14 +70,14 @@ public class LauncherActivity extends Activity {
 
             // Get package info with enhanced error handling
             PackageInfo packageInfo = getPackageInfoWithFallback(packageName, userId);
-            
+
             if (packageInfo == null) {
                 Slog.w(TAG, "Package info not available for " + packageName + ", but proceeding with launch");
                 // Don't fail immediately - try to proceed anyway
             } else {
                 Slog.d(TAG, "Successfully retrieved package info for " + packageName);
             }
-            
+
             // Properly load the app icon and app name
             Drawable drawable = null;
             String appName = packageName;
@@ -99,10 +98,10 @@ public class LauncherActivity extends Activity {
                 nameView.setText(appName);
                 nameView.setAlpha(0f);
                 nameView.animate()
-                    .alpha(1f)
-                    .setDuration(500)
-                    .setStartDelay(200)
-                    .start();
+                        .alpha(1f)
+                        .setDuration(500)
+                        .setStartDelay(200)
+                        .start();
             }
             if (iconView != null && drawable != null) {
                 iconView.setImageDrawable(drawable);
@@ -110,23 +109,23 @@ public class LauncherActivity extends Activity {
                 iconView.setScaleY(0.7f);
                 iconView.setAlpha(0f);
                 iconView.animate()
-                    .scaleX(1.1f)
-                    .scaleY(1.1f)
-                    .alpha(1f)
-                    .setDuration(350)
-                    .setInterpolator(new OvershootInterpolator())
-                    .withEndAction(() -> iconView.animate()
-                        .scaleX(1f)
-                        .scaleY(1f)
-                        .setDuration(150)
-                        .setInterpolator(new android.view.animation.DecelerateInterpolator())
-                        .start())
-                    .start();
+                        .scaleX(1.1f)
+                        .scaleY(1.1f)
+                        .alpha(1f)
+                        .setDuration(350)
+                        .setInterpolator(new OvershootInterpolator())
+                        .withEndAction(() -> iconView.animate()
+                                .scaleX(1f)
+                                .scaleY(1f)
+                                .setDuration(150)
+                                .setInterpolator(new android.view.animation.DecelerateInterpolator())
+                                .start())
+                        .start();
             }
-            
+
             // Launch the app in a separate thread to avoid blocking the UI
             launchAppAsync(launchIntent, userId);
-            
+
         } catch (Exception e) {
             Slog.e(TAG, "Critical error in LauncherActivity.onCreate()", e);
             finish();
@@ -142,19 +141,19 @@ public class LauncherActivity extends Activity {
             return BlackBoxCore.getBPackageManager().getPackageInfo(packageName, 0, userId);
         } catch (Exception e) {
             Slog.w(TAG, "Failed to get package info for " + packageName + " (attempt 1): " + e.getMessage());
-            
+
             try {
                 // Second attempt: Try with different flags
-                return BlackBoxCore.getBPackageManager().getPackageInfo(packageName, 
-                    android.content.pm.PackageManager.GET_META_DATA, userId);
+                return BlackBoxCore.getBPackageManager().getPackageInfo(packageName,
+                        android.content.pm.PackageManager.GET_META_DATA, userId);
             } catch (Exception e2) {
                 Slog.w(TAG, "Failed to get package info for " + packageName + " (attempt 2): " + e2.getMessage());
-                
+
                 try {
                     // Third attempt: Try to get application info instead
                     android.content.pm.ApplicationInfo appInfo = BlackBoxCore.getBPackageManager()
-                        .getApplicationInfo(packageName, 0, userId);
-                    
+                            .getApplicationInfo(packageName, 0, userId);
+
                     if (appInfo != null) {
                         // Create a minimal PackageInfo from ApplicationInfo
                         PackageInfo fallbackInfo = new PackageInfo();
@@ -164,7 +163,7 @@ public class LauncherActivity extends Activity {
                         fallbackInfo.versionName = "1.0";
                         fallbackInfo.firstInstallTime = System.currentTimeMillis();
                         fallbackInfo.lastUpdateTime = System.currentTimeMillis();
-                        
+
                         Slog.d(TAG, "Created fallback PackageInfo for " + packageName);
                         return fallbackInfo;
                     }
@@ -173,7 +172,7 @@ public class LauncherActivity extends Activity {
                 }
             }
         }
-        
+
         return null;
     }
 
@@ -184,17 +183,17 @@ public class LauncherActivity extends Activity {
         new Thread(() -> {
             try {
                 Slog.d(TAG, "Starting app launch in background thread");
-                
+
                 // Add a small delay to ensure the launcher activity is properly displayed
                 Thread.sleep(100);
-                
+
                 // Launch the app
                 BlackBoxCore.getBActivityManager().startActivity(launchIntent, userId);
-                
+
                 Slog.d(TAG, "App launch initiated successfully");
             } catch (Exception e) {
                 Slog.e(TAG, "Error launching app", e);
-                
+
                 // Try to show an error message to the user
                 runOnUiThread(() -> {
                     try {

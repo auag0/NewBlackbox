@@ -1,6 +1,7 @@
 package top.niunaijun.blackbox.fake.service;
 
 import android.os.Build;
+
 import java.lang.reflect.Method;
 import java.net.InetAddress;
 import java.util.ArrayList;
@@ -59,17 +60,17 @@ public class IDnsResolverProxy extends BinderInvocationStub {
                 if (result != null) {
                     return result;
                 }
-                
+
                 // If original method fails, provide fallback DNS servers
                 Slog.w(TAG, "DNS resolution failed, providing fallback");
                 return createFallbackDnsResult();
-                
+
             } catch (Exception e) {
                 Slog.w(TAG, "DNS resolution error, providing fallback: " + e.getMessage());
                 return createFallbackDnsResult();
             }
         }
-        
+
         private Object createFallbackDnsResult() {
             try {
                 // Create a fallback DNS result with Google DNS

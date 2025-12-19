@@ -5,9 +5,9 @@ import java.lang.reflect.Method;
 import top.niunaijun.blackbox.fake.hook.ClassInvocationStub;
 import top.niunaijun.blackbox.fake.hook.MethodHook;
 import top.niunaijun.blackbox.fake.hook.ProxyMethod;
-import top.niunaijun.blackbox.utils.Slog;
-import top.niunaijun.blackbox.utils.AttributionSourceUtils;
 import top.niunaijun.blackbox.util.XiaomiDeviceDetector;
+import top.niunaijun.blackbox.utils.AttributionSourceUtils;
+import top.niunaijun.blackbox.utils.Slog;
 
 /**
  * IXiaomiMiuiServices Proxy to handle MIUI-specific service issues on Android 12+
@@ -30,7 +30,7 @@ public class IXiaomiMiuiServicesProxy extends ClassInvocationStub {
     protected void inject(Object base, Object proxy) {
         // This proxy handles Xiaomi-specific MIUI service issues globally
         if (XiaomiDeviceDetector.isXiaomiDevice()) {
-            Slog.d(TAG, "IXiaomiMiuiServices proxy initialized for MIUI service crash prevention on " + 
+            Slog.d(TAG, "IXiaomiMiuiServices proxy initialized for MIUI service crash prevention on " +
                     XiaomiDeviceDetector.getDeviceModel() + " (MIUI " + XiaomiDeviceDetector.getMiuiVersion() + ")");
         } else {
             Slog.d(TAG, "IXiaomiMiuiServices proxy initialized for MIUI service crash prevention");
@@ -50,14 +50,14 @@ public class IXiaomiMiuiServicesProxy extends ClassInvocationStub {
             try {
                 // Fix AttributionSource in args before calling original method
                 AttributionSourceUtils.fixAttributionSourceInArgs(args);
-                
+
                 // Call original method
                 return method.invoke(who, args);
             } catch (NullPointerException e) {
                 // Handle NullPointerException specifically for MIUI camera manager on Xiaomi
                 String message = e.getMessage();
-                if (message != null && message.contains("Attempt to invoke virtual method") && 
-                    message.contains("android.provider.MiuiSettings$SettingsCloudData$CloudData.getString")) {
+                if (message != null && message.contains("Attempt to invoke virtual method") &&
+                        message.contains("android.provider.MiuiSettings$SettingsCloudData$CloudData.getString")) {
                     Slog.w(TAG, "MIUI Camera Manager NullPointerException on Xiaomi, creating safe fallback: " + message);
                     return createSafeMiuiCameraManagerForXiaomi();
                 }
@@ -86,7 +86,7 @@ public class IXiaomiMiuiServicesProxy extends ClassInvocationStub {
             try {
                 // Fix AttributionSource in args before calling original method
                 AttributionSourceUtils.fixAttributionSourceInArgs(args);
-                
+
                 // Call original method
                 return method.invoke(who, args);
             } catch (Exception e) {
@@ -105,7 +105,7 @@ public class IXiaomiMiuiServicesProxy extends ClassInvocationStub {
             try {
                 // Fix AttributionSource in args before calling original method
                 AttributionSourceUtils.fixAttributionSourceInArgs(args);
-                
+
                 // Call original method
                 return method.invoke(who, args);
             } catch (Exception e) {
@@ -124,7 +124,7 @@ public class IXiaomiMiuiServicesProxy extends ClassInvocationStub {
             try {
                 // Fix AttributionSource in args before calling original method
                 AttributionSourceUtils.fixAttributionSourceInArgs(args);
-                
+
                 // Call original method
                 return method.invoke(who, args);
             } catch (Exception e) {
@@ -143,7 +143,7 @@ public class IXiaomiMiuiServicesProxy extends ClassInvocationStub {
             try {
                 // Fix AttributionSource in args before calling original method
                 AttributionSourceUtils.fixAttributionSourceInArgs(args);
-                
+
                 // Call original method
                 return method.invoke(who, args);
             } catch (Exception e) {
@@ -162,7 +162,7 @@ public class IXiaomiMiuiServicesProxy extends ClassInvocationStub {
             try {
                 // Fix AttributionSource in args before calling original method
                 AttributionSourceUtils.fixAttributionSourceInArgs(args);
-                
+
                 // Call original method
                 return method.invoke(who, args);
             } catch (Exception e) {
@@ -181,7 +181,7 @@ public class IXiaomiMiuiServicesProxy extends ClassInvocationStub {
             try {
                 // Fix AttributionSource in args before calling original method
                 AttributionSourceUtils.fixAttributionSourceInArgs(args);
-                
+
                 // Call original method
                 return method.invoke(who, args);
             } catch (Exception e) {
@@ -200,7 +200,7 @@ public class IXiaomiMiuiServicesProxy extends ClassInvocationStub {
             try {
                 // Fix AttributionSource in args before calling original method
                 AttributionSourceUtils.fixAttributionSourceInArgs(args);
-                
+
                 // Call original method
                 return method.invoke(who, args);
             } catch (Exception e) {
@@ -218,10 +218,10 @@ public class IXiaomiMiuiServicesProxy extends ClassInvocationStub {
         try {
             // Try to create a safe MiuiCameraCoveredManager using reflection
             Class<?> miuiCameraManagerClass = Class.forName("android.provider.MiuiSettings$SettingsCloudData$CloudData");
-            
+
             // Try different constructor signatures that work on Xiaomi
             Object miuiCameraManager = null;
-            
+
             try {
                 // Try default constructor
                 java.lang.reflect.Constructor<?> constructor = miuiCameraManagerClass.getDeclaredConstructor();
@@ -232,7 +232,7 @@ public class IXiaomiMiuiServicesProxy extends ClassInvocationStub {
                 Slog.w(TAG, "Could not create safe MiuiCameraManager for Xiaomi: " + e.getMessage());
                 return null;
             }
-            
+
             return miuiCameraManager;
         } catch (Exception e) {
             Slog.w(TAG, "Error creating safe MiuiCameraManager for Xiaomi: " + e.getMessage());

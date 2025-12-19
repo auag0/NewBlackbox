@@ -71,17 +71,17 @@ public class SystemProviderStub extends ClassInvocationStub implements BContentP
     private boolean isSystemProviderAuthority(String authority) {
         if (authority == null) return false;
         // Common system provider authorities that should not be replaced
-        return authority.equals("settings") || 
-               authority.equals("media") || 
-               authority.equals("downloads") || 
-               authority.equals("contacts") || 
-               authority.equals("call_log") || 
-               authority.equals("telephony") || 
-               authority.equals("calendar") || 
-               authority.equals("browser") || 
-               authority.equals("user_dictionary") || 
-               authority.equals("applications") ||
-               authority.startsWith("com.android.") ||
-               authority.startsWith("android.");
+        return authority.equals("settings") ||
+                authority.equals("media") ||
+                authority.equals("downloads") ||
+                authority.equals("contacts") ||
+                authority.equals("call_log") ||
+                authority.equals("telephony") ||
+                authority.equals("calendar") ||
+                authority.equals("browser") ||
+                authority.equals("user_dictionary") ||
+                authority.equals("applications") ||
+                authority.startsWith("com.android.") ||
+                authority.startsWith("android.");
     }
 }

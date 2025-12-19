@@ -15,11 +15,12 @@ public class TrieTree {
         boolean isEnd = false; // This node is whether the end of a word
         List<TrieNode> children = new LinkedList<>();
 
-        public TrieNode() {}
+        public TrieNode() {
+        }
 
         public TrieNode(char content, String word) {
             this.content = content;
-            this.word    = word;
+            this.word = word;
         }
 
 

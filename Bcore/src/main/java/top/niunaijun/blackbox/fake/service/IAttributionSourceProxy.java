@@ -1,7 +1,6 @@
 package top.niunaijun.blackbox.fake.service;
 
 
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 
@@ -49,15 +48,15 @@ public class IAttributionSourceProxy extends ClassInvocationStub {
                 // Always create AttributionSource with correct UID to prevent crashes
                 int uid = BActivityThread.getBUid();
                 String packageName = BlackBoxCore.getHostPkg();
-                
+
                 Slog.d(TAG, "Creating AttributionSource with UID: " + uid + ", package: " + packageName);
-                
+
                 // Create AttributionSource with proper UID
                 Object attributionSource = createSafeAttributionSource(uid, packageName);
                 if (attributionSource != null) {
                     return attributionSource;
                 }
-                
+
                 // Fallback to original method if creation fails
                 return method.invoke(who, args);
             } catch (Exception e) {
@@ -65,12 +64,12 @@ public class IAttributionSourceProxy extends ClassInvocationStub {
                 return createSafeAttributionSource(BActivityThread.getBUid(), BlackBoxCore.getHostPkg());
             }
         }
-        
+
         private Object createSafeAttributionSource(int uid, String packageName) {
             try {
                 // Use reflection to create AttributionSource with correct parameters
                 Class<?> attributionSourceClass = Class.forName("android.content.AttributionSource");
-                
+
                 // Try different constructor signatures
                 Constructor<?> constructor = null;
                 try {
@@ -85,10 +84,10 @@ public class IAttributionSourceProxy extends ClassInvocationStub {
                         constructor = attributionSourceClass.getDeclaredConstructor();
                     }
                 }
-                
+
                 if (constructor != null) {
                     constructor.setAccessible(true);
-                    
+
                     if (constructor.getParameterCount() == 3) {
                         return constructor.newInstance(uid, packageName, null);
                     } else if (constructor.getParameterCount() == 2) {
@@ -97,7 +96,7 @@ public class IAttributionSourceProxy extends ClassInvocationStub {
                         return constructor.newInstance();
                     }
                 }
-                
+
                 return null;
             } catch (Exception e) {
                 Slog.e(TAG, "Failed to create safe AttributionSource: " + e.getMessage());
@@ -151,7 +150,7 @@ public class IAttributionSourceProxy extends ClassInvocationStub {
                     fixAttributionSourceUid(result);
                     return result;
                 }
-                
+
                 // If original method fails, create a safe fallback
                 return createSafeAttributionSource(BActivityThread.getBUid(), BlackBoxCore.getHostPkg());
             } catch (Exception e) {
@@ -159,7 +158,7 @@ public class IAttributionSourceProxy extends ClassInvocationStub {
                 return createSafeAttributionSource(BActivityThread.getBUid(), BlackBoxCore.getHostPkg());
             }
         }
-        
+
         private void fixAttributionSourceUid(Object attributionSource) {
             try {
                 // Use reflection to fix the UID
@@ -167,13 +166,13 @@ public class IAttributionSourceProxy extends ClassInvocationStub {
                 Method setUidMethod = attributionSourceClass.getDeclaredMethod("setUid", int.class);
                 setUidMethod.setAccessible(true);
                 setUidMethod.invoke(attributionSource, BActivityThread.getBUid());
-                
+
                 Slog.d(TAG, "Fixed AttributionSource UID to: " + BActivityThread.getBUid());
             } catch (Exception e) {
                 Slog.w(TAG, "Could not fix AttributionSource UID: " + e.getMessage());
             }
         }
-        
+
         private Object createSafeAttributionSource(int uid, String packageName) {
             try {
                 Class<?> attributionSourceClass = Class.forName("android.content.AttributionSource");

@@ -35,7 +35,7 @@ public class IContextHubServiceProxy extends BinderInvocationStub {
         super.onBindMethod();
         addMethodHook(new ValueMethodProxy("registerCallback", 0));
         addMethodHook(new ValueMethodProxy("getContextHubInfo", null));
-        addMethodHook(new ValueMethodProxy("getContextHubHandles",new int[]{}));
+        addMethodHook(new ValueMethodProxy("getContextHubHandles", new int[]{}));
     }
 
     @Override

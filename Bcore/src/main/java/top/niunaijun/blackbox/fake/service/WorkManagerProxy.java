@@ -1,7 +1,6 @@
 package top.niunaijun.blackbox.fake.service;
 
 import android.content.Context;
-import android.os.Bundle;
 
 import java.lang.reflect.Method;
 
@@ -57,7 +56,7 @@ public class WorkManagerProxy extends ClassInvocationStub {
         protected Object hook(Object who, Method method, Object[] args) throws Throwable {
             try {
                 Slog.d(TAG, "WorkManager: enqueue() called");
-                
+
                 // Log the arguments for debugging
                 if (args != null) {
                     for (int i = 0; i < args.length; i++) {
@@ -66,18 +65,18 @@ public class WorkManagerProxy extends ClassInvocationStub {
                         }
                     }
                 }
-                
+
                 // Try to proceed with the original method
                 return method.invoke(who, args);
-                
+
             } catch (Exception e) {
                 Slog.w(TAG, "WorkManager: enqueue() failed, returning mock result", e);
-                
+
                 // Return a mock result to prevent crashes
                 return createMockWorkResult();
             }
         }
-        
+
         private Object createMockWorkResult() {
             try {
                 // Try to create a mock WorkResult object
@@ -100,24 +99,24 @@ public class WorkManagerProxy extends ClassInvocationStub {
         protected Object hook(Object who, Method method, Object[] args) throws Throwable {
             try {
                 Slog.d(TAG, "WorkManager: enqueueUniqueWork() called");
-                
+
                 // Log the arguments for debugging
                 if (args != null && args.length > 0) {
                     String workName = (String) args[0];
                     Slog.d(TAG, "WorkManager: Unique work name: " + workName);
                 }
-                
+
                 // Try to proceed with the original method
                 return method.invoke(who, args);
-                
+
             } catch (Exception e) {
                 Slog.w(TAG, "WorkManager: enqueueUniqueWork() failed, returning mock result", e);
-                
+
                 // Return a mock result to prevent crashes
                 return createMockWorkResult();
             }
         }
-        
+
         private Object createMockWorkResult() {
             try {
                 // Try to create a mock WorkResult object
@@ -140,24 +139,24 @@ public class WorkManagerProxy extends ClassInvocationStub {
         protected Object hook(Object who, Method method, Object[] args) throws Throwable {
             try {
                 Slog.d(TAG, "WorkManager: enqueueUniquePeriodicWork() called");
-                
+
                 // Log the arguments for debugging
                 if (args != null && args.length > 0) {
                     String workName = (String) args[0];
                     Slog.d(TAG, "WorkManager: Periodic work name: " + workName);
                 }
-                
+
                 // Try to proceed with the original method
                 return method.invoke(who, args);
-                
+
             } catch (Exception e) {
                 Slog.w(TAG, "WorkManager: enqueueUniquePeriodicWork() failed, returning mock result", e);
-                
+
                 // Return a mock result to prevent crashes
                 return createMockWorkResult();
             }
         }
-        
+
         private Object createMockWorkResult() {
             try {
                 // Try to create a mock WorkResult object
@@ -180,13 +179,13 @@ public class WorkManagerProxy extends ClassInvocationStub {
         protected Object hook(Object who, Method method, Object[] args) throws Throwable {
             try {
                 Slog.d(TAG, "WorkManager: cancelAllWork() called");
-                
+
                 // Try to proceed with the original method
                 return method.invoke(who, args);
-                
+
             } catch (Exception e) {
                 Slog.w(TAG, "WorkManager: cancelAllWork() failed, ignoring", e);
-                
+
                 // Return void (null) for cancel operations
                 return null;
             }
@@ -202,19 +201,19 @@ public class WorkManagerProxy extends ClassInvocationStub {
         protected Object hook(Object who, Method method, Object[] args) throws Throwable {
             try {
                 Slog.d(TAG, "WorkManager: cancelWorkById() called");
-                
+
                 // Log the work ID for debugging
                 if (args != null && args.length > 0) {
                     String workId = (String) args[0];
                     Slog.d(TAG, "WorkManager: Cancelling work ID: " + workId);
                 }
-                
+
                 // Try to proceed with the original method
                 return method.invoke(who, args);
-                
+
             } catch (Exception e) {
                 Slog.w(TAG, "WorkManager: cancelWorkById() failed, ignoring", e);
-                
+
                 // Return void (null) for cancel operations
                 return null;
             }
@@ -230,18 +229,18 @@ public class WorkManagerProxy extends ClassInvocationStub {
         protected Object hook(Object who, Method method, Object[] args) throws Throwable {
             try {
                 Slog.d(TAG, "WorkManager: getWorkInfos() called");
-                
+
                 // Try to proceed with the original method
                 return method.invoke(who, args);
-                
+
             } catch (Exception e) {
                 Slog.w(TAG, "WorkManager: getWorkInfos() failed, returning empty list", e);
-                
+
                 // Return an empty list to prevent crashes
                 return createEmptyWorkInfoList();
             }
         }
-        
+
         private Object createEmptyWorkInfoList() {
             try {
                 // Try to create an empty WorkInfo list

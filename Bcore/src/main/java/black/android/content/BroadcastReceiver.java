@@ -21,7 +21,7 @@ public interface BroadcastReceiver {
     interface PendingResultM {
         @BConstructor
         android.content.BroadcastReceiver.PendingResult _new(int resultCode, String resultData, Bundle resultExtras, int type,
-                              boolean ordered, boolean sticky, IBinder token, int userId, int flags);
+                                                             boolean ordered, boolean sticky, IBinder token, int userId, int flags);
 
         @BField
         boolean mAbortBroadcast();

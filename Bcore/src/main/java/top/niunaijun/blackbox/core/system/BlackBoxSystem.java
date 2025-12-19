@@ -2,10 +2,7 @@ package top.niunaijun.blackbox.core.system;
 
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.util.Log;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -25,9 +22,6 @@ import top.niunaijun.blackbox.core.system.pm.BXposedManagerService;
 import top.niunaijun.blackbox.core.system.user.BUserHandle;
 import top.niunaijun.blackbox.core.system.user.BUserManagerService;
 import top.niunaijun.blackbox.entity.pm.InstallOption;
-import top.niunaijun.blackbox.utils.FileUtils;
-
-import top.niunaijun.blackbox.core.system.JarManager;
 
 /**
  * updated by alex5402 on 4/22/21.
@@ -86,7 +80,7 @@ public class BlackBoxSystem {
         }
         // Initialize JAR environment using improved JarManager
         JarManager.getInstance().initializeAsync();
-        
+
         // Test JAR manager functionality (can be removed in production)
      /*   try {
             JarManagerTest.testConfiguration();

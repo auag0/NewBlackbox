@@ -1,6 +1,5 @@
 package top.niunaijun.blackbox.fake.frameworks;
 
-import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.ProviderInfo;
@@ -43,7 +42,7 @@ public class BActivityManager extends BlackManager<IBActivityManagerService> {
     public AppConfig initProcess(String packageName, String processName, int userId) {
         int retryCount = 0;
         final int maxRetries = 3;
-        
+
         while (retryCount < maxRetries) {
             try {
                 IBActivityManagerService service = getService();
@@ -75,7 +74,7 @@ public class BActivityManager extends BlackManager<IBActivityManagerService> {
             }
             retryCount++;
         }
-        
+
         Slog.e(TAG, "Failed to initProcess after " + maxRetries + " retries for package: " + packageName + ", process: " + processName);
         return null;
     }
@@ -94,7 +93,7 @@ public class BActivityManager extends BlackManager<IBActivityManagerService> {
     public void startActivity(Intent intent, int userId) {
         int retryCount = 0;
         final int maxRetries = 3;
-        
+
         while (retryCount < maxRetries) {
             try {
                 IBActivityManagerService service = getService();
@@ -129,14 +128,14 @@ public class BActivityManager extends BlackManager<IBActivityManagerService> {
             }
             retryCount++;
         }
-        
+
         Slog.e(TAG, "Failed to start activity after " + maxRetries + " retries");
     }
 
     public int startActivityAms(int userId, Intent intent, String resolvedType, IBinder resultTo, String resultWho, int requestCode, int flags, Bundle options) {
         int retryCount = 0;
         final int maxRetries = 3;
-        
+
         while (retryCount < maxRetries) {
             try {
                 IBActivityManagerService service = getService();
@@ -163,7 +162,7 @@ public class BActivityManager extends BlackManager<IBActivityManagerService> {
             }
             retryCount++;
         }
-        
+
         Slog.e(TAG, "Failed to start activity AMS after " + maxRetries + " retries");
         return -1;
     }
@@ -183,7 +182,7 @@ public class BActivityManager extends BlackManager<IBActivityManagerService> {
     public ComponentName startService(Intent intent, String resolvedType, boolean requireForeground, int userId) {
         int retryCount = 0;
         final int maxRetries = 3;
-        
+
         while (retryCount < maxRetries) {
             try {
                 IBActivityManagerService service = getService();
@@ -210,7 +209,7 @@ public class BActivityManager extends BlackManager<IBActivityManagerService> {
             }
             retryCount++;
         }
-        
+
         Slog.e(TAG, "Failed to start service after " + maxRetries + " retries");
         return null;
     }

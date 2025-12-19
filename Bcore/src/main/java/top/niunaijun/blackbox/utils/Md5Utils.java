@@ -15,8 +15,8 @@ import java.security.NoSuchAlgorithmException;
 
 public class Md5Utils {
 
-    private static final char[] hexDigits = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd',
-            'e', 'f' };
+    private static final char[] hexDigits = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd',
+            'e', 'f'};
 
 
     public static String md5(String input) {

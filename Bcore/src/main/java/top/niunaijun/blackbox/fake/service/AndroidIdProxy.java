@@ -57,12 +57,12 @@ public class AndroidIdProxy extends ClassInvocationStub {
             try {
                 Slog.d(TAG, "AndroidId: Handling getString call");
                 Object result = method.invoke(who, args);
-                
+
                 // Check if this is an Android ID related string
                 if (args != null && args.length > 0 && args[0] instanceof String) {
                     String key = (String) args[0];
-                    if (key.contains("android_id") || key.contains("ANDROID_ID") || 
-                        key.contains("secure_id") || key.contains("device_id")) {
+                    if (key.contains("android_id") || key.contains("ANDROID_ID") ||
+                            key.contains("secure_id") || key.contains("device_id")) {
                         if (result == null || "0".equals(result.toString()) || "".equals(result.toString())) {
                             Slog.w(TAG, "AndroidId: Invalid Android ID string detected, returning mock ID");
                             return generateMockAndroidId();
@@ -84,12 +84,12 @@ public class AndroidIdProxy extends ClassInvocationStub {
             try {
                 Slog.d(TAG, "AndroidId: Handling getLong call");
                 Object result = method.invoke(who, args);
-                
+
                 // Check if this is an Android ID related long value
                 if (args != null && args.length > 0 && args[0] instanceof String) {
                     String key = (String) args[0];
-                    if (key.contains("android_id") || key.contains("ANDROID_ID") || 
-                        key.contains("secure_id") || key.contains("device_id")) {
+                    if (key.contains("android_id") || key.contains("ANDROID_ID") ||
+                            key.contains("secure_id") || key.contains("device_id")) {
                         if (result == null || ((Number) result).longValue() == 0) {
                             Slog.w(TAG, "AndroidId: Invalid Android ID long detected, returning mock ID");
                             return generateMockAndroidIdLong();
@@ -111,12 +111,12 @@ public class AndroidIdProxy extends ClassInvocationStub {
             try {
                 Slog.d(TAG, "AndroidId: Handling get call");
                 Object result = method.invoke(who, args);
-                
+
                 // Check if this is an Android ID related get
                 if (args != null && args.length > 0 && args[0] instanceof String) {
                     String key = (String) args[0];
-                    if (key.contains("android_id") || key.contains("ANDROID_ID") || 
-                        key.contains("secure_id") || key.contains("device_id")) {
+                    if (key.contains("android_id") || key.contains("ANDROID_ID") ||
+                            key.contains("secure_id") || key.contains("device_id")) {
                         if (result == null || "0".equals(result.toString()) || "".equals(result.toString())) {
                             Slog.w(TAG, "AndroidId: Invalid Android ID get detected, returning mock ID");
                             return generateMockAndroidId();
@@ -138,12 +138,12 @@ public class AndroidIdProxy extends ClassInvocationStub {
             try {
                 Slog.d(TAG, "AndroidId: Handling read call");
                 Object result = method.invoke(who, args);
-                
+
                 // Check if this is an Android ID related read
                 if (args != null && args.length > 0 && args[0] instanceof String) {
                     String key = (String) args[0];
-                    if (key.contains("android_id") || key.contains("ANDROID_ID") || 
-                        key.contains("secure_id") || key.contains("device_id")) {
+                    if (key.contains("android_id") || key.contains("ANDROID_ID") ||
+                            key.contains("secure_id") || key.contains("device_id")) {
                         if (result == null || "0".equals(result.toString()) || "".equals(result.toString())) {
                             Slog.w(TAG, "AndroidId: Invalid Android ID read detected, returning mock ID");
                             return generateMockAndroidId();

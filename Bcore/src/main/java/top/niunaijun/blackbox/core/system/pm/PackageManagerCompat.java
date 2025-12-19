@@ -134,12 +134,12 @@ public class PackageManagerCompat {
                     final BPackage.Service s = p.services.get(i);
                     //res[num++] = generateServiceInfo(s, flags, state, userId);
                     ServiceInfo serviceInfo = generateServiceInfo(s, flags, state, userId);
-                    if(serviceInfo == null) continue;
+                    if (serviceInfo == null) continue;
                     if ((flags & PackageManager.GET_META_DATA) != 0) {
-                        if(serviceInfo.metaData != null){
+                        if (serviceInfo.metaData != null) {
                             res[num++] = serviceInfo;
                         }
-                    }else{
+                    } else {
                         res[num++] = serviceInfo;
                     }
                 }

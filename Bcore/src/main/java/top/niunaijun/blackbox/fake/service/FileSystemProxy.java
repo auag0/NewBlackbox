@@ -41,13 +41,13 @@ public class FileSystemProxy extends ClassInvocationStub {
             try {
                 File file = (File) who;
                 String path = file.getAbsolutePath();
-                
+
                 // Handle Helium crash reporter paths
                 if (path.contains("Helium Crashpad") || path.contains("HeliumCrashReporter")) {
                     Slog.d(TAG, "FileSystem: mkdirs called for Helium crash path: " + path + ", returning true");
                     return true; // Pretend directory was created successfully
                 }
-                
+
                 return method.invoke(who, args);
             } catch (Exception e) {
                 Slog.w(TAG, "FileSystem: mkdirs failed, returning true", e);
@@ -64,13 +64,13 @@ public class FileSystemProxy extends ClassInvocationStub {
             try {
                 File file = (File) who;
                 String path = file.getAbsolutePath();
-                
+
                 // Handle Helium crash reporter paths
                 if (path.contains("Helium Crashpad") || path.contains("HeliumCrashReporter")) {
                     Slog.d(TAG, "FileSystem: mkdir called for Helium crash path: " + path + ", returning true");
                     return true; // Pretend directory was created successfully
                 }
-                
+
                 return method.invoke(who, args);
             } catch (Exception e) {
                 Slog.w(TAG, "FileSystem: mkdir failed, returning true", e);
@@ -87,13 +87,13 @@ public class FileSystemProxy extends ClassInvocationStub {
             try {
                 File file = (File) who;
                 String path = file.getAbsolutePath();
-                
+
                 // Handle Helium crash reporter paths
                 if (path.contains("Helium Crashpad") || path.contains("HeliumCrashReporter")) {
                     Slog.d(TAG, "FileSystem: isDirectory called for Helium crash path: " + path + ", returning true");
                     return true; // Pretend it's a directory
                 }
-                
+
                 return method.invoke(who, args);
             } catch (Exception e) {
                 Slog.w(TAG, "FileSystem: isDirectory failed, returning false", e);

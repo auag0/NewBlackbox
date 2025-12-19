@@ -17,7 +17,6 @@ import android.view.WindowManager;
 import black.android.app.BRActivity;
 import black.com.android.internal.BRRstyleable;
 import top.niunaijun.blackbox.BlackBoxCore;
-import top.niunaijun.blackbox.app.BActivityThread;
 import top.niunaijun.blackbox.utils.DrawableUtils;
 
 /**

@@ -74,7 +74,7 @@ import top.niunaijun.blackbox.utils.compat.AccountManagerCompat;
  * Created by BlackBox on 2022/3/3.
  */
 @SuppressLint("InlinedApi")
-public class BAccountManagerService extends IBAccountManagerService.Stub implements ISystemService , PackageMonitor {
+public class BAccountManagerService extends IBAccountManagerService.Stub implements ISystemService, PackageMonitor {
     private static final String TAG = "AccountManagerService";
 
     private static BAccountManagerService sService = new BAccountManagerService();
@@ -715,6 +715,7 @@ public class BAccountManagerService extends IBAccountManagerService.Stub impleme
             public void run() throws RemoteException {
                 mAuthenticator.updateCredentials(this, account, authTokenType, loginOptions);
             }
+
             @Override
             protected String toDebugString(long now) {
                 if (loginOptions != null) loginOptions.keySet();
@@ -739,6 +740,7 @@ public class BAccountManagerService extends IBAccountManagerService.Stub impleme
             public void run() throws RemoteException {
                 mAuthenticator.editProperties(this, mAccountType);
             }
+
             @Override
             protected String toDebugString(long now) {
                 return super.toDebugString(now) + ", editProperties"
@@ -770,7 +772,7 @@ public class BAccountManagerService extends IBAccountManagerService.Stub impleme
 //        }
         BUserAccounts accounts = getUserAccounts(userId);
         new Session(accounts, response, accountType, false /* expectActivityLaunch */,
-                false /* stripAuthTokenFromResult */,  null /* accountName */,
+                false /* stripAuthTokenFromResult */, null /* accountName */,
                 false /* authDetailsRequired */) {
             @Override
             protected String toDebugString(long now) {
@@ -819,7 +821,7 @@ public class BAccountManagerService extends IBAccountManagerService.Stub impleme
     }
 
     protected void saveAuthTokenToDatabase(BUserAccounts accounts, Account account, String
-                                           authTokenType, String authToken) {
+            authTokenType, String authToken) {
         if (accounts == null)
             return;
         synchronized (accounts.lock) {
@@ -864,7 +866,7 @@ public class BAccountManagerService extends IBAccountManagerService.Stub impleme
 
     private void completeCloningAccount(IAccountManagerResponse response,
                                         final Bundle accountCredentials, final Account account, final BUserAccounts targetUser,
-                                        final int parentUserId){
+                                        final int parentUserId) {
         new Session(targetUser, response, account.type, false,
                 false /* stripAuthTokenFromResult */, account.name,
                 false /* authDetailsRequired */) {
@@ -898,7 +900,7 @@ public class BAccountManagerService extends IBAccountManagerService.Stub impleme
 
             @Override
             public void onError(int errorCode, String errorMessage) {
-                super.onError(errorCode,  errorMessage);
+                super.onError(errorCode, errorMessage);
                 // TODO: Show error notification to user
                 // TODO: Should we remove the shadow account so that it doesn't keep trying?
             }
@@ -1220,6 +1222,7 @@ public class BAccountManagerService extends IBAccountManagerService.Stub impleme
 
     private class RemoveAccountSession extends Session {
         final Account mAccount;
+
         public RemoveAccountSession(BUserAccounts accounts, IAccountManagerResponse response,
                                     Account account, boolean expectActivityLaunch) {
             super(accounts, response, account.type, expectActivityLaunch,

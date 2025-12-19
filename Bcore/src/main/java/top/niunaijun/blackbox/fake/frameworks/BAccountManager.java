@@ -90,9 +90,9 @@ public class BAccountManager extends BlackManager<IBAccountManagerService> {
             e.printStackTrace();
         }
     }
-    
+
     public void getAccountsByFeatures(IAccountManagerResponse response, String accountType,
-                               String[] features) {
+                                      String[] features) {
         try {
             getService().getAccountsByFeatures(response, accountType, features, BActivityThread.getUserId());
         } catch (RemoteException e) {
@@ -110,7 +110,7 @@ public class BAccountManager extends BlackManager<IBAccountManagerService> {
     }
 
     public void removeAccountAsUser(IAccountManagerResponse response, Account account,
-                             boolean expectActivityLaunch) {
+                                    boolean expectActivityLaunch) {
         try {
             getService().removeAccountAsUser(response, account, expectActivityLaunch, BActivityThread.getUserId());
         } catch (RemoteException e) {
@@ -128,7 +128,7 @@ public class BAccountManager extends BlackManager<IBAccountManagerService> {
     }
 
     public void copyAccountToUser(IAccountManagerResponse response, Account account,
-                           int userFrom, int userTo) {
+                                  int userFrom, int userTo) {
         try {
             getService().copyAccountToUser(response, account, userFrom, userTo);
         } catch (RemoteException e) {
@@ -195,8 +195,8 @@ public class BAccountManager extends BlackManager<IBAccountManagerService> {
     }
 
     public void getAuthToken(IAccountManagerResponse response, Account account,
-                      String authTokenType, boolean notifyOnAuthFailure, boolean expectActivityLaunch,
-                      Bundle options) {
+                             String authTokenType, boolean notifyOnAuthFailure, boolean expectActivityLaunch,
+                             Bundle options) {
         try {
             getService().getAuthToken(response, account, authTokenType, notifyOnAuthFailure, expectActivityLaunch, options, BActivityThread.getUserId());
         } catch (RemoteException e) {
@@ -205,8 +205,8 @@ public class BAccountManager extends BlackManager<IBAccountManagerService> {
     }
 
     public void addAccount(IAccountManagerResponse response, String accountType,
-                    String authTokenType, String[] requiredFeatures, boolean expectActivityLaunch,
-                    Bundle options) {
+                           String authTokenType, String[] requiredFeatures, boolean expectActivityLaunch,
+                           Bundle options) {
         try {
             getService().addAccount(response, accountType, authTokenType, requiredFeatures, expectActivityLaunch, options, BActivityThread.getUserId());
         } catch (RemoteException e) {
@@ -215,8 +215,8 @@ public class BAccountManager extends BlackManager<IBAccountManagerService> {
     }
 
     public void addAccountAsUser(IAccountManagerResponse response, String accountType,
-                          String authTokenType, String[] requiredFeatures, boolean expectActivityLaunch,
-                          Bundle options) {
+                                 String authTokenType, String[] requiredFeatures, boolean expectActivityLaunch,
+                                 Bundle options) {
         try {
             getService().addAccountAsUser(response, accountType, authTokenType, requiredFeatures, expectActivityLaunch, options, BActivityThread.getUserId());
         } catch (RemoteException e) {
@@ -225,7 +225,7 @@ public class BAccountManager extends BlackManager<IBAccountManagerService> {
     }
 
     public void updateCredentials(IAccountManagerResponse response, Account account,
-                           String authTokenType, boolean expectActivityLaunch, Bundle options) {
+                                  String authTokenType, boolean expectActivityLaunch, Bundle options) {
         try {
             getService().updateCredentials(response, account, authTokenType, expectActivityLaunch, options, BActivityThread.getUserId());
         } catch (RemoteException e) {
@@ -234,7 +234,7 @@ public class BAccountManager extends BlackManager<IBAccountManagerService> {
     }
 
     public void editProperties(IAccountManagerResponse response, String accountType,
-                        boolean expectActivityLaunch) {
+                               boolean expectActivityLaunch) {
         try {
             getService().editProperties(response, accountType, expectActivityLaunch, BActivityThread.getUserId());
         } catch (RemoteException e) {
@@ -243,7 +243,7 @@ public class BAccountManager extends BlackManager<IBAccountManagerService> {
     }
 
     public void confirmCredentialsAsUser(IAccountManagerResponse response, Account account,
-                                  Bundle options, boolean expectActivityLaunch) {
+                                         Bundle options, boolean expectActivityLaunch) {
         try {
             getService().confirmCredentialsAsUser(response, account, options, expectActivityLaunch, BActivityThread.getUserId());
         } catch (RemoteException e) {
@@ -261,7 +261,7 @@ public class BAccountManager extends BlackManager<IBAccountManagerService> {
     }
 
     public void getAuthTokenLabel(IAccountManagerResponse response, String accountType,
-                           String authTokenType) {
+                                  String authTokenType) {
         try {
             getService().getAuthTokenLabel(response, accountType, authTokenType, BActivityThread.getUserId());
         } catch (RemoteException e) {
@@ -280,7 +280,7 @@ public class BAccountManager extends BlackManager<IBAccountManagerService> {
     }
 
     public boolean addAccountExplicitlyWithVisibility(Account account, String password, Bundle extras,
-                                               Map visibility) {
+                                                      Map visibility) {
         try {
             return getService().addAccountExplicitlyWithVisibility(account, password, extras, visibility, BActivityThread.getUserId());
         } catch (RemoteException e) {

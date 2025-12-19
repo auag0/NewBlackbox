@@ -2,19 +2,12 @@ package top.niunaijun.blackbox.utils;
 
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.os.Build;
-import android.os.Process;
 
 import java.io.File;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
 import top.niunaijun.blackbox.BlackBoxCore;
-import top.niunaijun.blackbox.app.BActivityThread;
 
 /**
  * Comprehensive crash prevention utility for DEX and ClassLoader related crashes.
@@ -24,17 +17,17 @@ import top.niunaijun.blackbox.app.BActivityThread;
 public class DexCrashPrevention {
     private static final String TAG = "DexCrashPrevention";
     private static boolean sIsInitialized = false;
-    
+
     // Cache for prevention attempts
     private static final Map<String, PreventionResult> sPreventionCache = new HashMap<>();
-    
+
     // Known problematic APK patterns
     private static final String[] PROBLEMATIC_APK_PATTERNS = {
-        "split_config.xhdpi.apk",
-        "split_config.arm64_v8a.apk",
-        "split_config.armeabi_v7a.apk"
+            "split_config.xhdpi.apk",
+            "split_config.arm64_v8a.apk",
+            "split_config.armeabi_v7a.apk"
     };
-    
+
     /**
      * Prevention result containing the prevention method and success status
      */
@@ -43,21 +36,21 @@ public class DexCrashPrevention {
         public final boolean success;
         public final String details;
         public final long timestamp;
-        
+
         public PreventionResult(String preventionMethod, boolean success, String details) {
             this.preventionMethod = preventionMethod;
             this.success = success;
             this.details = details;
             this.timestamp = System.currentTimeMillis();
         }
-        
+
         @Override
         public String toString() {
-            return "Prevention " + (success ? "successful" : "failed") + 
-                   " via " + preventionMethod + ": " + details;
+            return "Prevention " + (success ? "successful" : "failed") +
+                    " via " + preventionMethod + ": " + details;
         }
     }
-    
+
     /**
      * Initialize DEX crash prevention mechanisms
      */
@@ -65,30 +58,30 @@ public class DexCrashPrevention {
         if (sIsInitialized) {
             return;
         }
-        
+
         try {
             Slog.d(TAG, "Initializing DEX crash prevention...");
-            
+
             // Install proactive prevention mechanisms
             installProactivePrevention();
-            
+
             // Install DEX file validation
             installDexFileValidation();
-            
+
             // Install ClassLoader monitoring
             installClassLoaderMonitoring();
-            
+
             // Install APK integrity checks
             installApkIntegrityChecks();
-            
+
             sIsInitialized = true;
             Slog.d(TAG, "DEX crash prevention initialized successfully");
-            
+
         } catch (Exception e) {
             Slog.e(TAG, "Failed to initialize DEX crash prevention: " + e.getMessage(), e);
         }
     }
-    
+
     /**
      * Install proactive prevention mechanisms
      */
@@ -96,18 +89,18 @@ public class DexCrashPrevention {
         try {
             // Monitor and prevent common DEX corruption scenarios
             Slog.d(TAG, "Installing proactive DEX corruption prevention");
-            
+
             // Set up file system monitoring for APK files
             setupApkFileMonitoring();
-            
+
             // Pre-validate critical APK files
             prevalidateCriticalApkFiles();
-            
+
         } catch (Exception e) {
             Slog.w(TAG, "Failed to install proactive prevention: " + e.getMessage());
         }
     }
-    
+
     /**
      * Set up APK file monitoring
      */
@@ -126,7 +119,7 @@ public class DexCrashPrevention {
             Slog.w(TAG, "Failed to setup APK file monitoring: " + e.getMessage());
         }
     }
-    
+
     /**
      * Pre-validate critical APK files
      */
@@ -150,22 +143,22 @@ public class DexCrashPrevention {
             Slog.w(TAG, "Failed to pre-validate APK files: " + e.getMessage());
         }
     }
-    
+
     /**
      * Install DEX file validation
      */
     private static void installDexFileValidation() {
         try {
             Slog.d(TAG, "Installing DEX file validation");
-            
+
             // Hook into DEX file loading to validate before use
             hookDexFileValidation();
-            
+
         } catch (Exception e) {
             Slog.w(TAG, "Failed to install DEX file validation: " + e.getMessage());
         }
     }
-    
+
     /**
      * Hook DEX file validation
      */
@@ -178,22 +171,22 @@ public class DexCrashPrevention {
             Slog.w(TAG, "Failed to hook DEX file validation: " + e.getMessage());
         }
     }
-    
+
     /**
      * Install ClassLoader monitoring
      */
     private static void installClassLoaderMonitoring() {
         try {
             Slog.d(TAG, "Installing ClassLoader monitoring");
-            
+
             // Monitor ClassLoader operations for potential failures
             setupClassLoaderMonitoring();
-            
+
         } catch (Exception e) {
             Slog.w(TAG, "Failed to install ClassLoader monitoring: " + e.getMessage());
         }
     }
-    
+
     /**
      * Set up ClassLoader monitoring
      */
@@ -209,22 +202,22 @@ public class DexCrashPrevention {
             Slog.w(TAG, "Failed to setup ClassLoader monitoring: " + e.getMessage());
         }
     }
-    
+
     /**
      * Install APK integrity checks
      */
     private static void installApkIntegrityChecks() {
         try {
             Slog.d(TAG, "Installing APK integrity checks");
-            
+
             // Set up periodic APK integrity validation
             setupPeriodicIntegrityChecks();
-            
+
         } catch (Exception e) {
             Slog.w(TAG, "Failed to install APK integrity checks: " + e.getMessage());
         }
     }
-    
+
     /**
      * Set up periodic integrity checks
      */
@@ -236,7 +229,7 @@ public class DexCrashPrevention {
             Slog.w(TAG, "Failed to setup periodic integrity checks: " + e.getMessage());
         }
     }
-    
+
     /**
      * Validate and prevent APK corruption
      */
@@ -244,12 +237,12 @@ public class DexCrashPrevention {
         if (apkFilePath == null) {
             return new PreventionResult("Validation", false, "APK file path is null");
         }
-        
+
         // Check cache first
         if (sPreventionCache.containsKey(apkFilePath)) {
             return sPreventionCache.get(apkFilePath);
         }
-        
+
         try {
             File apkFile = new File(apkFilePath);
             if (!apkFile.exists()) {
@@ -257,7 +250,7 @@ public class DexCrashPrevention {
                 sPreventionCache.put(apkFilePath, result);
                 return result;
             }
-            
+
             // Check if it's a problematic split APK
             if (isProblematicSplitApk(apkFile.getName())) {
                 Slog.w(TAG, "Detected problematic split APK: " + apkFile.getName());
@@ -265,7 +258,7 @@ public class DexCrashPrevention {
                 sPreventionCache.put(apkFilePath, result);
                 return result;
             }
-            
+
             // Validate APK integrity
             if (DexFileRecovery.isValidApkFile(apkFile)) {
                 PreventionResult result = new PreventionResult("Validation", true, "APK file is valid");
@@ -278,63 +271,63 @@ public class DexCrashPrevention {
                 sPreventionCache.put(apkFilePath, result);
                 return result;
             }
-            
+
         } catch (Exception e) {
             PreventionResult result = new PreventionResult("Validation", false, "Error during validation: " + e.getMessage());
             sPreventionCache.put(apkFilePath, result);
             return result;
         }
     }
-    
+
     /**
      * Check if this is a problematic split APK
      */
     private static boolean isProblematicSplitApk(String fileName) {
         if (fileName == null) return false;
-        
+
         for (String pattern : PROBLEMATIC_APK_PATTERNS) {
             if (fileName.contains(pattern)) {
                 return true;
             }
         }
-        
+
         return false;
     }
-    
+
     /**
      * Handle problematic split APK files
      */
     private static PreventionResult handleProblematicSplitApk(File splitApk) {
         try {
             Slog.d(TAG, "Handling problematic split APK: " + splitApk.getName());
-            
+
             // Try to find the base APK
             String baseApkPath = findBaseApkPath(splitApk);
             if (baseApkPath != null) {
                 // Validate the base APK
                 if (DexFileRecovery.isValidApkFile(new File(baseApkPath))) {
                     Slog.d(TAG, "Found valid base APK: " + baseApkPath);
-                    return new PreventionResult("Split APK Handling", true, 
-                        "Using valid base APK instead of problematic split: " + baseApkPath);
+                    return new PreventionResult("Split APK Handling", true,
+                            "Using valid base APK instead of problematic split: " + baseApkPath);
                 }
             }
-            
+
             // If no valid base APK, try to recover the split APK
             DexFileRecovery.RecoveryResult recoveryResult = DexFileRecovery.recoverDexFile(splitApk.getAbsolutePath());
             if (recoveryResult.success) {
-                return new PreventionResult("Split APK Recovery", true, 
-                    "Recovered split APK via " + recoveryResult.recoveryMethod);
+                return new PreventionResult("Split APK Recovery", true,
+                        "Recovered split APK via " + recoveryResult.recoveryMethod);
             } else {
-                return new PreventionResult("Split APK Recovery", false, 
-                    "Failed to recover split APK: " + recoveryResult.errorMessage);
+                return new PreventionResult("Split APK Recovery", false,
+                        "Failed to recover split APK: " + recoveryResult.errorMessage);
             }
-            
+
         } catch (Exception e) {
-            return new PreventionResult("Split APK Handling", false, 
-                "Error handling split APK: " + e.getMessage());
+            return new PreventionResult("Split APK Handling", false,
+                    "Error handling split APK: " + e.getMessage());
         }
     }
-    
+
     /**
      * Find the base APK path for a split APK
      */
@@ -342,10 +335,10 @@ public class DexCrashPrevention {
         try {
             File parent = splitApk.getParentFile();
             if (parent != null && parent.exists()) {
-                File[] files = parent.listFiles((dir, name) -> 
-                    name.endsWith(".apk") && !name.contains("split_config")
+                File[] files = parent.listFiles((dir, name) ->
+                        name.endsWith(".apk") && !name.contains("split_config")
                 );
-                
+
                 if (files != null && files.length > 0) {
                     // Return the first base APK found
                     return files[0].getAbsolutePath();
@@ -354,34 +347,34 @@ public class DexCrashPrevention {
         } catch (Exception e) {
             Slog.w(TAG, "Error finding base APK: " + e.getMessage());
         }
-        
+
         return null;
     }
-    
+
     /**
      * Attempt to recover from corruption
      */
     private static PreventionResult attemptCorruptionRecovery(String corruptedFilePath) {
         try {
             Slog.d(TAG, "Attempting corruption recovery for: " + corruptedFilePath);
-            
+
             // Use the comprehensive DEX file recovery utility
             DexFileRecovery.RecoveryResult recoveryResult = DexFileRecovery.recoverDexFile(corruptedFilePath);
-            
+
             if (recoveryResult.success) {
-                return new PreventionResult("Corruption Recovery", true, 
-                    "Successfully recovered via " + recoveryResult.recoveryMethod);
+                return new PreventionResult("Corruption Recovery", true,
+                        "Successfully recovered via " + recoveryResult.recoveryMethod);
             } else {
-                return new PreventionResult("Corruption Recovery", false, 
-                    "Recovery failed: " + recoveryResult.errorMessage);
+                return new PreventionResult("Corruption Recovery", false,
+                        "Recovery failed: " + recoveryResult.errorMessage);
             }
-            
+
         } catch (Exception e) {
-            return new PreventionResult("Corruption Recovery", false, 
-                "Error during recovery: " + e.getMessage());
+            return new PreventionResult("Corruption Recovery", false,
+                    "Error during recovery: " + e.getMessage());
         }
     }
-    
+
     /**
      * Get virtual app directory
      */
@@ -400,7 +393,7 @@ public class DexCrashPrevention {
         }
         return null;
     }
-    
+
     /**
      * Get virtual app APK files
      */
@@ -425,7 +418,7 @@ public class DexCrashPrevention {
         }
         return null;
     }
-    
+
     /**
      * Clear prevention cache
      */
@@ -433,14 +426,14 @@ public class DexCrashPrevention {
         sPreventionCache.clear();
         Slog.d(TAG, "Prevention cache cleared");
     }
-    
+
     /**
      * Get prevention statistics
      */
     public static String getPreventionStats() {
         int successful = 0;
         int failed = 0;
-        
+
         for (PreventionResult result : sPreventionCache.values()) {
             if (result.success) {
                 successful++;
@@ -448,11 +441,11 @@ public class DexCrashPrevention {
                 failed++;
             }
         }
-        
-        return "Prevention Stats - Successful: " + successful + ", Failed: " + failed + 
-               ", Total Attempts: " + sPreventionCache.size();
+
+        return "Prevention Stats - Successful: " + successful + ", Failed: " + failed +
+                ", Total Attempts: " + sPreventionCache.size();
     }
-    
+
     /**
      * Force prevention attempt for a specific file
      */
@@ -461,7 +454,7 @@ public class DexCrashPrevention {
         sPreventionCache.remove(filePath);
         return validateAndPreventCorruption(filePath);
     }
-    
+
     /**
      * Get comprehensive DEX crash prevention status
      */
@@ -472,7 +465,7 @@ public class DexCrashPrevention {
         status.append("Cache Size: ").append(sPreventionCache.size()).append("\n");
         status.append("Prevention Stats: ").append(getPreventionStats()).append("\n");
         status.append("Recovery Stats: ").append(DexFileRecovery.getRecoveryStats()).append("\n");
-        
+
         return status.toString();
     }
 }

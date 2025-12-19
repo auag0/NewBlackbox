@@ -5,8 +5,6 @@ import android.content.pm.PackageManager;
 import android.os.Process;
 
 import top.niunaijun.blackbox.BlackBoxCore;
-import top.niunaijun.blackbox.app.BActivityThread;
-import top.niunaijun.blackbox.utils.Slog;
 
 /**
  * UID Spoofing Helper to handle UID validation issues in virtual environments
@@ -14,7 +12,7 @@ import top.niunaijun.blackbox.utils.Slog;
  */
 public class UIDSpoofingHelper {
     private static final String TAG = "UIDSpoofingHelper";
-    
+
     /**
      * Get the appropriate UID for system operations
      * This helps bypass UID validation issues
@@ -28,7 +26,7 @@ public class UIDSpoofingHelper {
             return 1000; // Fallback to system UID
         }
     }
-    
+
     /**
      * Get the appropriate UID for package operations
      * This helps bypass package UID validation issues
@@ -47,17 +45,17 @@ public class UIDSpoofingHelper {
                     }
                 }
             }
-            
+
             // Fallback to system UID if package UID not found
             Slog.w(TAG, "Package UID not found for " + packageName + ", using system UID");
             return getSystemUID();
-            
+
         } catch (Exception e) {
             Slog.w(TAG, "Failed to get package UID for " + packageName + ", using system UID", e);
             return getSystemUID();
         }
     }
-    
+
     /**
      * Get the appropriate UID for job scheduling operations
      * This helps bypass job scheduler UID validation issues
@@ -66,23 +64,23 @@ public class UIDSpoofingHelper {
         try {
             // For job scheduling, we need to use the target package's UID
             int packageUid = getPackageUID(targetPackage);
-            
+
             // If we got a valid package UID, use it
             if (packageUid > 0) { // Valid UIDs are positive numbers
                 Slog.d(TAG, "Using package UID for job scheduling: " + packageUid);
                 return packageUid;
             }
-            
+
             // Fallback to system UID
             Slog.w(TAG, "Using system UID for job scheduling as fallback");
             return getSystemUID();
-            
+
         } catch (Exception e) {
             Slog.w(TAG, "Failed to get job scheduling UID, using system UID", e);
             return getSystemUID();
         }
     }
-    
+
     /**
      * Check if the current UID needs spoofing for a specific operation
      */
@@ -90,21 +88,21 @@ public class UIDSpoofingHelper {
         try {
             int currentUid = Process.myUid();
             int targetUid = getPackageUID(targetPackage);
-            
+
             // If current UID doesn't match target package UID, we need spoofing
             boolean needsSpoofing = currentUid != targetUid;
-            
-            Slog.d(TAG, "UID spoofing check: current=" + currentUid + 
-                       ", target=" + targetUid + ", needsSpoofing=" + needsSpoofing);
-            
+
+            Slog.d(TAG, "UID spoofing check: current=" + currentUid +
+                    ", target=" + targetUid + ", needsSpoofing=" + needsSpoofing);
+
             return needsSpoofing;
-            
+
         } catch (Exception e) {
             Slog.w(TAG, "Failed to check UID spoofing need, assuming yes", e);
             return true; // Assume we need spoofing if check fails
         }
     }
-    
+
     /**
      * Get the best UID for a specific system operation
      */
@@ -114,14 +112,14 @@ public class UIDSpoofingHelper {
                 case "job_schedule":
                 case "job_enqueue":
                     return getJobSchedulingUID(targetPackage);
-                    
+
                 case "content_provider":
                 case "settings_access":
                     return getSystemUID();
-                    
+
                 case "package_operation":
                     return getPackageUID(targetPackage);
-                    
+
                 default:
                     // For unknown operations, try package UID first, then system UID
                     int packageUid = getPackageUID(targetPackage);
@@ -135,7 +133,7 @@ public class UIDSpoofingHelper {
             return getSystemUID();
         }
     }
-    
+
     /**
      * Log UID information for debugging
      */
@@ -144,10 +142,10 @@ public class UIDSpoofingHelper {
             int currentUid = Process.myUid();
             int bestUid = getBestUIDForOperation(operation, targetPackage);
             boolean needsSpoofing = needsUIDSpoofing(operation, targetPackage);
-            
+
             Slog.d(TAG, String.format("UID Info - Operation: %s, Package: %s, Current: %d, Best: %d, NeedsSpoofing: %s",
                     operation, targetPackage, currentUid, bestUid, needsSpoofing));
-                    
+
         } catch (Exception e) {
             Slog.w(TAG, "Failed to log UID info", e);
         }

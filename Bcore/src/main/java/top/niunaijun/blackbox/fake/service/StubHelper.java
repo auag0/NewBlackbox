@@ -16,8 +16,9 @@ public class StubHelper {
 
     /**
      * Get a service interface using the generated stub class or fallback to reflection
-     * @param serviceName The name of the service
-     * @param stubClassName The expected generated stub class name
+     *
+     * @param serviceName       The name of the service
+     * @param stubClassName     The expected generated stub class name
      * @param realStubClassName The real Android stub class name
      * @return The service interface or null if all attempts fail
      */
@@ -27,7 +28,7 @@ public class StubHelper {
             Class<?> stubClass = Class.forName(stubClassName);
             Method getMethod = stubClass.getMethod("get");
             Object stub = getMethod.invoke(null);
-            
+
             // Try different method signatures for asInterface
             Method asInterfaceMethod = null;
             try {
@@ -48,7 +49,7 @@ public class StubHelper {
                     }
                 }
             }
-            
+
             if (asInterfaceMethod != null) {
                 IBinder binder = BRServiceManager.get().getService(serviceName);
                 return asInterfaceMethod.invoke(stub, binder);
@@ -58,7 +59,7 @@ public class StubHelper {
         } catch (Exception e) {
             Log.w(TAG, "Failed to use generated stub class: " + stubClassName, e);
         }
-        
+
         // Fallback: use reflection to get the real service
         try {
             IBinder binder = BRServiceManager.get().getService(serviceName);
@@ -73,10 +74,11 @@ public class StubHelper {
 
     /**
      * Get a service interface using the generated stub class or fallback to reflection
-     * @param serviceName The name of the service
-     * @param stubClassName The expected generated stub class name
+     *
+     * @param serviceName       The name of the service
+     * @param stubClassName     The expected generated stub class name
      * @param realStubClassName The real Android stub class name
-     * @param binder The IBinder to use (if not null, serviceName is ignored)
+     * @param binder            The IBinder to use (if not null, serviceName is ignored)
      * @return The service interface or null if all attempts fail
      */
     public static Object getServiceInterface(String serviceName, String stubClassName, String realStubClassName, IBinder binder) {
@@ -85,7 +87,7 @@ public class StubHelper {
             Class<?> stubClass = Class.forName(stubClassName);
             Method getMethod = stubClass.getMethod("get");
             Object stub = getMethod.invoke(null);
-            
+
             // Try different method signatures for asInterface
             Method asInterfaceMethod = null;
             try {
@@ -106,7 +108,7 @@ public class StubHelper {
                     }
                 }
             }
-            
+
             if (asInterfaceMethod != null) {
                 IBinder serviceBinder = binder != null ? binder : BRServiceManager.get().getService(serviceName);
                 return asInterfaceMethod.invoke(stub, serviceBinder);
@@ -116,7 +118,7 @@ public class StubHelper {
         } catch (Exception e) {
             Log.w(TAG, "Failed to use generated stub class: " + stubClassName, e);
         }
-        
+
         // Fallback: use reflection to get the real service
         try {
             IBinder serviceBinder = binder != null ? binder : BRServiceManager.get().getService(serviceName);

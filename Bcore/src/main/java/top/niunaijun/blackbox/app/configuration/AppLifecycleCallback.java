@@ -3,7 +3,6 @@ package top.niunaijun.blackbox.app.configuration;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 
 /**

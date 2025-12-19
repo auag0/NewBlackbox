@@ -7,7 +7,6 @@ import java.lang.reflect.Method;
 import black.android.os.BRServiceManager;
 import black.android.view.BRIAutoFillManagerStub;
 import top.niunaijun.blackbox.BlackBoxCore;
-import top.niunaijun.blackbox.app.BActivityThread;
 import top.niunaijun.blackbox.fake.hook.BinderInvocationStub;
 import top.niunaijun.blackbox.fake.hook.MethodHook;
 import top.niunaijun.blackbox.fake.hook.ProxyMethod;

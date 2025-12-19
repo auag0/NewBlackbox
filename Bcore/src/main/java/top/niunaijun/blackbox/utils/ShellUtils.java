@@ -181,7 +181,6 @@ public class ShellUtils {
         public String successMsg;
 
 
-
         public CommandResult(int result) {
             this.result = result;
         }

@@ -42,7 +42,7 @@ public class BPackageManager extends BlackManager<IBPackageManagerService> {
     public static BPackageManager get() {
         return sPackageManager;
     }
-    
+
     /**
      * Reset the transaction throttler - call this when the app is restarted or when you want to clear failure state
      */
@@ -50,7 +50,7 @@ public class BPackageManager extends BlackManager<IBPackageManagerService> {
         transactionThrottler.reset();
         Log.d(TAG, "Transaction throttler reset");
     }
-    
+
     /**
      * Check if we should use fallback mode due to service health issues
      */
@@ -65,7 +65,7 @@ public class BPackageManager extends BlackManager<IBPackageManagerService> {
         Log.d(TAG, "Force reinitializing PackageManager service");
         clearServiceCache();
         resetTransactionThrottler();
-        
+
         // Try to get the service again
         try {
             IBPackageManagerService service = getService();
@@ -103,7 +103,7 @@ public class BPackageManager extends BlackManager<IBPackageManagerService> {
             Log.w(TAG, "Using fallback launch intent for " + packageName + " due to service failures");
             return createFallbackLaunchIntent(packageName);
         }
-        
+
         Intent intentToResolve = new Intent(Intent.ACTION_MAIN);
         intentToResolve.addCategory(Intent.CATEGORY_INFO);
         intentToResolve.setPackage(packageName);
@@ -132,7 +132,7 @@ public class BPackageManager extends BlackManager<IBPackageManagerService> {
                 ris.get(0).activityInfo.name);
         return intent;
     }
-    
+
     /**
      * Create a simple fallback launch intent when the service is unavailable
      */
@@ -147,7 +147,7 @@ public class BPackageManager extends BlackManager<IBPackageManagerService> {
         } catch (Exception e) {
             Log.w(TAG, "Fallback launch intent failed for " + packageName, e);
         }
-        
+
         // Last resort: create a generic intent
         Intent intent = new Intent(Intent.ACTION_MAIN);
         intent.addCategory(Intent.CATEGORY_LAUNCHER);
@@ -162,7 +162,7 @@ public class BPackageManager extends BlackManager<IBPackageManagerService> {
             Log.w(TAG, "Throttling resolveService due to recent failures");
             return null;
         }
-        
+
         try {
             IBPackageManagerService service = getService();
             if (service != null) {
@@ -206,7 +206,7 @@ public class BPackageManager extends BlackManager<IBPackageManagerService> {
             Log.w(TAG, "Throttling resolveActivity due to recent failures");
             return null;
         }
-        
+
         try {
             IBPackageManagerService service = getService();
             if (service != null) {
@@ -250,7 +250,7 @@ public class BPackageManager extends BlackManager<IBPackageManagerService> {
             Log.w(TAG, "Throttling resolveContentProvider due to recent failures");
             return null;
         }
-        
+
         try {
             IBPackageManagerService service = getService();
             if (service != null) {
@@ -405,13 +405,13 @@ public class BPackageManager extends BlackManager<IBPackageManagerService> {
             Log.w(TAG, "Throttling queryIntentActivities due to recent failures");
             return Collections.emptyList();
         }
-        
+
         // If we've had too many failures, don't even try
         if (transactionThrottler.getFailureCount() >= 2) {
             Log.w(TAG, "Too many failures, returning empty list for queryIntentActivities");
             return Collections.emptyList();
         }
-        
+
         try {
             IBPackageManagerService service = getService();
             if (service != null) {
@@ -427,7 +427,7 @@ public class BPackageManager extends BlackManager<IBPackageManagerService> {
             Log.w(TAG, "PackageManager service died during queryIntentActivities, clearing cache and retrying", e);
             transactionThrottler.recordFailure();
             clearServiceCache(); // Clear cached service
-            
+
             // Only retry if we haven't had too many failures
             if (transactionThrottler.getFailureCount() < 3) {
                 try {
@@ -531,7 +531,7 @@ public class BPackageManager extends BlackManager<IBPackageManagerService> {
                     Log.w(TAG, "Could not verify package info for: " + file, e);
                 }
             }
-            
+
             return getService().installPackageAsUser(file, option, userId);
         } catch (RemoteException e) {
             crash(e);
@@ -595,7 +595,7 @@ public class BPackageManager extends BlackManager<IBPackageManagerService> {
             Log.w(TAG, "Using fallback isInstalled check for " + packageName + " due to service failures");
             return isInstalledFallback(packageName);
         }
-        
+
         try {
             IBPackageManagerService service = getService();
             if (service != null) {
@@ -631,7 +631,7 @@ public class BPackageManager extends BlackManager<IBPackageManagerService> {
         }
         return false;
     }
-    
+
     /**
      * Fallback method for checking if a package is installed
      */
@@ -643,8 +643,8 @@ public class BPackageManager extends BlackManager<IBPackageManagerService> {
         } catch (Exception e) {
             Log.d(TAG, "Fallback isInstalled check failed for " + packageName + ", assuming not installed");
             // For known apps that should be available, return true even if fallback fails
-            if (packageName != null && (packageName.equals("com.media.bestrecorder.audiorecorder") || 
-                                       packageName.startsWith("top.niunaijun.blackbox"))) {
+            if (packageName != null && (packageName.equals("com.media.bestrecorder.audiorecorder") ||
+                    packageName.startsWith("top.niunaijun.blackbox"))) {
                 Log.w(TAG, "Returning true for known app " + packageName + " despite fallback failure");
                 return true;
             }
@@ -680,7 +680,7 @@ public class BPackageManager extends BlackManager<IBPackageManagerService> {
         info.packageName = packageName;
         info.flags = flags;
         info.uid = 0; // Placeholder, actual UID would require more context
-        
+
         // Use more realistic paths that are less likely to cause issues
         // Try to find the actual APK path first, fallback to system paths
         String apkPath = findActualApkPath(packageName);
@@ -693,16 +693,16 @@ public class BPackageManager extends BlackManager<IBPackageManagerService> {
             info.sourceDir = null; // Use null instead of fake path
             info.publicSourceDir = null; // Use null instead of fake path
         }
-        
+
         info.dataDir = "/data/data/" + packageName;
         info.nativeLibraryDir = "/data/app-lib/" + packageName;
         info.metaData = new Bundle();
         info.splitNames = new String[]{};
-        
+
         // Set some basic flags to make it look more realistic
         info.flags |= ApplicationInfo.FLAG_ALLOW_BACKUP;
         info.flags |= ApplicationInfo.FLAG_SUPPORTS_RTL;
-        
+
         return info;
     }
 
@@ -719,26 +719,26 @@ public class BPackageManager extends BlackManager<IBPackageManagerService> {
             // Skip PackageManager call to prevent infinite recursion
             // The PackageManager is hooked and would cause infinite loops
             Log.d(TAG, "Skipping PackageManager call to prevent recursion for " + packageName);
-            
+
             // Try common paths including real-world hash-based paths
             String[] commonPaths = {
-                // Real-world hash-based paths (most common)
-                "/data/app/~~*/" + packageName + "-*/base.apk",
-                "/data/app/~~*/" + packageName + "*/base.apk",
-                
-                // Legacy paths
-                "/data/app/" + packageName + "-1/base.apk",
-                "/data/app/" + packageName + "-2/base.apk",
-                "/data/app/" + packageName + "/base.apk",
-                
-                // System paths
-                "/system/app/" + packageName + ".apk",
-                "/system/priv-app/" + packageName + ".apk",
-                "/system_ext/app/" + packageName + ".apk",
-                "/product/app/" + packageName + ".apk",
-                "/vendor/app/" + packageName + ".apk"
+                    // Real-world hash-based paths (most common)
+                    "/data/app/~~*/" + packageName + "-*/base.apk",
+                    "/data/app/~~*/" + packageName + "*/base.apk",
+
+                    // Legacy paths
+                    "/data/app/" + packageName + "-1/base.apk",
+                    "/data/app/" + packageName + "-2/base.apk",
+                    "/data/app/" + packageName + "/base.apk",
+
+                    // System paths
+                    "/system/app/" + packageName + ".apk",
+                    "/system/priv-app/" + packageName + ".apk",
+                    "/system_ext/app/" + packageName + ".apk",
+                    "/product/app/" + packageName + ".apk",
+                    "/vendor/app/" + packageName + ".apk"
             };
-            
+
             // First try exact path matching
             for (String path : commonPaths) {
                 if (isValidApkPath(path)) {
@@ -746,14 +746,14 @@ public class BPackageManager extends BlackManager<IBPackageManagerService> {
                     return path;
                 }
             }
-            
+
             // If exact paths don't work, try to find hash-based paths dynamically
             String hashBasedPath = findHashBasedApkPath(packageName);
             if (hashBasedPath != null) {
                 Log.d(TAG, "Found hash-based APK at: " + hashBasedPath);
                 return hashBasedPath;
             }
-            
+
             Log.w(TAG, "No existing APK found for " + packageName + ", using null path");
             return null;
         } finally {
@@ -770,29 +770,29 @@ public class BPackageManager extends BlackManager<IBPackageManagerService> {
             if (!dataAppDir.exists() || !dataAppDir.isDirectory()) {
                 return null;
             }
-            
+
             // Look for hash directories (~~hash==)
             File[] hashDirs = dataAppDir.listFiles((dir, name) -> name.startsWith("~~") && name.endsWith("=="));
             if (hashDirs == null) {
                 return null;
             }
-            
+
             for (File hashDir : hashDirs) {
                 if (!hashDir.isDirectory()) {
                     continue;
                 }
-                
+
                 // Look for package directories within hash directories
                 File[] packageDirs = hashDir.listFiles((dir, name) -> name.startsWith(packageName));
                 if (packageDirs == null) {
                     continue;
                 }
-                
+
                 for (File packageDir : packageDirs) {
                     if (!packageDir.isDirectory()) {
                         continue;
                     }
-                    
+
                     // Look for base.apk within package directory
                     File baseApk = new File(packageDir, "base.apk");
                     if (isValidApkPath(baseApk.getAbsolutePath())) {
@@ -803,7 +803,7 @@ public class BPackageManager extends BlackManager<IBPackageManagerService> {
         } catch (Exception e) {
             Log.d(TAG, "Error searching for hash-based APK path for " + packageName + ": " + e.getMessage());
         }
-        
+
         return null;
     }
 
@@ -816,24 +816,24 @@ public class BPackageManager extends BlackManager<IBPackageManagerService> {
             if (path.contains("*")) {
                 return false;
             }
-            
+
             File apkFile = new File(path);
             if (!apkFile.exists()) {
                 return false;
             }
-            
+
             // Additional validation: check if it's readable and has reasonable size
             if (!apkFile.canRead()) {
                 Log.d(TAG, "APK file not readable: " + path);
                 return false;
             }
-            
+
             long fileSize = apkFile.length();
             if (fileSize < 1024) { // Less than 1KB is probably not a valid APK
                 Log.d(TAG, "APK file too small: " + path + " (size: " + fileSize + ")");
                 return false;
             }
-            
+
             return true;
         } catch (Exception e) {
             Log.d(TAG, "Error checking APK path " + path + ": " + e.getMessage());

@@ -1,45 +1,43 @@
 package top.niunaijun.blackbox.utils;
 
-import android.content.Context;
-import android.content.res.Configuration;
-import android.content.res.Resources;
-import top.niunaijun.blackbox.BlackBoxCore;
+import android.content.Intent;
+import android.util.Log;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import android.content.Intent;
-import android.util.Log;
 import java.util.List;
+
+import top.niunaijun.blackbox.BlackBoxCore;
 
 /**
  * SystemHookManager - Directly hooks problematic system methods to prevent null context crashes
  */
 public class SystemHookManager {
     private static final String TAG = "SystemHookManager";
-    
+
     /**
      * Install all system hooks to prevent null context crashes
      */
     public static void installAllHooks() {
         try {
             Log.d(TAG, "Installing system hooks...");
-            
+
             // Hook ClientTransactionListenerController
             hookClientTransactionListenerController();
-            
+
             // Hook ConfigurationController
             hookConfigurationController();
-            
+
             // Hook ActivityThread directly
             hookActivityThread();
-            
+
             Log.d(TAG, "System hooks installed successfully");
         } catch (Exception e) {
             Log.e(TAG, "Failed to install system hooks: " + e.getMessage(), e);
         }
     }
-    
+
     /**
      * Hook the ClientTransactionListenerController to prevent null context crashes
      */
@@ -49,43 +47,43 @@ public class SystemHookManager {
             Class<?> controllerClass = Class.forName("android.app.servertransaction.ClientTransactionListenerController");
             if (controllerClass != null) {
                 Log.d(TAG, "Found ClientTransactionListenerController class");
-                
+
                 // Create a proxy that handles null contexts gracefully
                 Object proxy = Proxy.newProxyInstance(
-                    controllerClass.getClassLoader(),
-                    new Class<?>[] { controllerClass },
-                    (proxyObj, method, args) -> {
-                        if ("onContextConfigurationPreChanged".equals(method.getName())) {
-                            try {
-                                // Before calling the original method, ensure all activities have valid contexts
-                                ensureAllActivitiesHaveContext();
-                                
-                                // Call the original method with null safety
-                                if (args != null && args.length > 0) {
-                                    return method.invoke(proxyObj, args);
-                                } else {
-                                    Log.w(TAG, "ClientTransactionListenerController called with null args, skipping");
+                        controllerClass.getClassLoader(),
+                        new Class<?>[]{controllerClass},
+                        (proxyObj, method, args) -> {
+                            if ("onContextConfigurationPreChanged".equals(method.getName())) {
+                                try {
+                                    // Before calling the original method, ensure all activities have valid contexts
+                                    ensureAllActivitiesHaveContext();
+
+                                    // Call the original method with null safety
+                                    if (args != null && args.length > 0) {
+                                        return method.invoke(proxyObj, args);
+                                    } else {
+                                        Log.w(TAG, "ClientTransactionListenerController called with null args, skipping");
+                                        return null;
+                                    }
+                                } catch (Exception e) {
+                                    Log.w(TAG, "Error in ClientTransactionListenerController proxy: " + e.getMessage());
+                                    // Return gracefully instead of crashing
                                     return null;
                                 }
-                            } catch (Exception e) {
-                                Log.w(TAG, "Error in ClientTransactionListenerController proxy: " + e.getMessage());
-                                // Return gracefully instead of crashing
-                                return null;
                             }
+                            return method.invoke(proxyObj, args);
                         }
-                        return method.invoke(proxyObj, args);
-                    }
                 );
-                
+
                 // Try to replace the instance in ActivityThread
                 replaceControllerInstance(controllerClass, proxy, "ClientTransactionListenerController");
-                
+
             }
         } catch (Exception e) {
             Log.w(TAG, "Could not hook ClientTransactionListenerController: " + e.getMessage());
         }
     }
-    
+
     /**
      * Hook the ConfigurationController to prevent null context crashes
      */
@@ -95,43 +93,43 @@ public class SystemHookManager {
             Class<?> controllerClass = Class.forName("android.app.ConfigurationController");
             if (controllerClass != null) {
                 Log.d(TAG, "Found ConfigurationController class");
-                
+
                 // Create a proxy that handles null contexts gracefully
                 Object proxy = Proxy.newProxyInstance(
-                    controllerClass.getClassLoader(),
-                    new Class<?>[] { controllerClass },
-                    (proxyObj, method, args) -> {
-                        if ("handleConfigurationChanged".equals(method.getName())) {
-                            try {
-                                // Before calling the original method, ensure all activities have valid contexts
-                                ensureAllActivitiesHaveContext();
-                                
-                                // Call the original method with null safety
-                                if (args != null && args.length > 0) {
-                                    return method.invoke(proxyObj, args);
-                                } else {
-                                    Log.w(TAG, "ConfigurationController called with null args, skipping");
+                        controllerClass.getClassLoader(),
+                        new Class<?>[]{controllerClass},
+                        (proxyObj, method, args) -> {
+                            if ("handleConfigurationChanged".equals(method.getName())) {
+                                try {
+                                    // Before calling the original method, ensure all activities have valid contexts
+                                    ensureAllActivitiesHaveContext();
+
+                                    // Call the original method with null safety
+                                    if (args != null && args.length > 0) {
+                                        return method.invoke(proxyObj, args);
+                                    } else {
+                                        Log.w(TAG, "ConfigurationController called with null args, skipping");
+                                        return null;
+                                    }
+                                } catch (Exception e) {
+                                    Log.w(TAG, "Error in ConfigurationController proxy: " + e.getMessage());
+                                    // Return gracefully instead of crashing
                                     return null;
                                 }
-                            } catch (Exception e) {
-                                Log.w(TAG, "Error in ConfigurationController proxy: " + e.getMessage());
-                                // Return gracefully instead of crashing
-                                return null;
                             }
+                            return method.invoke(proxyObj, args);
                         }
-                        return method.invoke(proxyObj, args);
-                    }
                 );
-                
+
                 // Try to replace the instance in ActivityThread
                 replaceControllerInstance(controllerClass, proxy, "ConfigurationController");
-                
+
             }
         } catch (Exception e) {
             Log.w(TAG, "Could not hook ConfigurationController: " + e.getMessage());
         }
     }
-    
+
     /**
      * Hook ActivityThread directly to ensure contexts are valid
      */
@@ -141,41 +139,41 @@ public class SystemHookManager {
             Class<?> activityThreadClass = Class.forName("android.app.ActivityThread");
             if (activityThreadClass != null) {
                 Log.d(TAG, "Found ActivityThread class");
-                
+
                 // Get the current ActivityThread instance
                 Object activityThread = BlackBoxCore.mainThread();
                 if (activityThread != null) {
                     Log.d(TAG, "Found ActivityThread instance");
-                    
+
                     // Try to hook the handleLaunchActivity method
                     try {
                         Method handleLaunchActivity = activityThreadClass.getDeclaredMethod(
-                            "handleLaunchActivity", 
-                            Object.class, // ActivityClientRecord
-                            Intent.class,
-                            Object.class, // ActivityInfo
-                            Object.class, // Configuration
-                            Object.class, // CompatibilityInfo
-                            String.class, // referrer
-                            Object.class, // IVoiceInteractor
-                            Object.class, // Bundle
-                            Object.class, // PersistableBundle
-                            List.class,   // List<ResultInfo>
-                            List.class,   // List<ReferrerIntent>
-                            boolean.class, // notResumed
-                            boolean.class, // isForward
-                            Object.class  // ProfilerInfo
+                                "handleLaunchActivity",
+                                Object.class, // ActivityClientRecord
+                                Intent.class,
+                                Object.class, // ActivityInfo
+                                Object.class, // Configuration
+                                Object.class, // CompatibilityInfo
+                                String.class, // referrer
+                                Object.class, // IVoiceInteractor
+                                Object.class, // Bundle
+                                Object.class, // PersistableBundle
+                                List.class,   // List<ResultInfo>
+                                List.class,   // List<ReferrerIntent>
+                                boolean.class, // notResumed
+                                boolean.class, // isForward
+                                Object.class  // ProfilerInfo
                         );
-                        
+
                         if (handleLaunchActivity != null) {
                             Log.d(TAG, "Found handleLaunchActivity method");
-                            
+
                             // Make the method accessible
                             handleLaunchActivity.setAccessible(true);
-                            
+
                             // We can't easily replace this method, but we can ensure our context fixes are applied
                             // The key is to make sure our context fixes are called before the original method
-                            
+
                         }
                     } catch (Exception e) {
                         Log.w(TAG, "Could not hook handleLaunchActivity: " + e.getMessage());
@@ -186,7 +184,7 @@ public class SystemHookManager {
             Log.w(TAG, "Could not hook ActivityThread: " + e.getMessage());
         }
     }
-    
+
     /**
      * Replace a controller instance in ActivityThread
      */
@@ -208,7 +206,7 @@ public class SystemHookManager {
                         }
                     }
                 }
-                
+
                 // If we couldn't find the field, try to create a new instance
                 Log.w(TAG, "Could not find " + controllerName + " field, trying to create new instance");
                 try {
@@ -229,7 +227,7 @@ public class SystemHookManager {
             Log.w(TAG, "Could not replace " + controllerName + " instance: " + e.getMessage());
         }
     }
-    
+
     /**
      * Ensure all activities in the current process have valid contexts
      */
@@ -242,8 +240,8 @@ public class SystemHookManager {
                 try {
                     Field[] fields = activityThread.getClass().getDeclaredFields();
                     for (Field field : fields) {
-                        if (field.getType().getName().contains("ArrayMap") || 
-                            field.getType().getName().contains("HashMap")) {
+                        if (field.getType().getName().contains("ArrayMap") ||
+                                field.getType().getName().contains("HashMap")) {
                             field.setAccessible(true);
                             Object activityRecords = field.get(activityThread);
                             if (activityRecords != null) {

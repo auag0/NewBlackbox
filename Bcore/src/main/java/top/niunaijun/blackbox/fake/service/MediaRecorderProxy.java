@@ -1,7 +1,5 @@
 package top.niunaijun.blackbox.fake.service;
 
-import android.media.MediaRecorder;
-
 import java.lang.reflect.Method;
 
 import top.niunaijun.blackbox.fake.hook.ClassInvocationStub;

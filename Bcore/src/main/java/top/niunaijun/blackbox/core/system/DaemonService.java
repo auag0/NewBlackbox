@@ -35,7 +35,7 @@ public class DaemonService extends Service {
     public void onCreate() {
         super.onCreate();
         Log.d(TAG, "DaemonService onCreate");
-        
+
         // Create notification channel for Android 8.0+
         if (BuildCompat.isOreo()) {
             createNotificationChannel();
@@ -45,12 +45,12 @@ public class DaemonService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG, "DaemonService onStartCommand");
-        
+
         try {
             // Start the inner service
             Intent innerIntent = new Intent(this, DaemonInnerService.class);
             startService(innerIntent);
-            
+
             // Start foreground service for Android 8.0+
             if (BuildCompat.isOreo()) {
                 if (!startForegroundService()) {
@@ -58,10 +58,10 @@ public class DaemonService extends Service {
                     return START_STICKY;
                 }
             }
-            
+
             Log.d(TAG, "DaemonService started successfully");
             return START_STICKY;
-            
+
         } catch (Exception e) {
             Log.e(TAG, "Error starting DaemonService: " + e.getMessage(), e);
             // Return START_STICKY to allow the system to restart the service
@@ -82,15 +82,15 @@ public class DaemonService extends Service {
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 NotificationChannel channel = new NotificationChannel(
-                    CHANNEL_ID,
-                    CHANNEL_NAME,
-                    NotificationManager.IMPORTANCE_LOW
+                        CHANNEL_ID,
+                        CHANNEL_NAME,
+                        NotificationManager.IMPORTANCE_LOW
                 );
                 channel.setDescription(CHANNEL_DESCRIPTION);
                 channel.setShowBadge(false);
                 channel.setSound(null, null);
                 channel.enableVibration(false);
-                
+
                 NotificationManager notificationManager = getSystemService(NotificationManager.class);
                 if (notificationManager != null) {
                     notificationManager.createNotificationChannel(channel);
@@ -128,13 +128,13 @@ public class DaemonService extends Service {
     private Notification createNotification() {
         try {
             NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setContentTitle("BlackBox Core")
-                .setContentText("Core services are running")
-                .setSmallIcon(android.R.drawable.ic_dialog_info)
-                .setPriority(NotificationCompat.PRIORITY_LOW)
-                .setOngoing(true)
-                .setAutoCancel(false);
-            
+                    .setContentTitle("BlackBox Core")
+                    .setContentText("Core services are running")
+                    .setSmallIcon(android.R.drawable.ic_dialog_info)
+                    .setPriority(NotificationCompat.PRIORITY_LOW)
+                    .setOngoing(true)
+                    .setAutoCancel(false);
+
             return builder.build();
         } catch (Exception e) {
             Log.e(TAG, "Failed to create notification: " + e.getMessage(), e);
@@ -155,7 +155,7 @@ public class DaemonService extends Service {
         @Override
         public int onStartCommand(Intent intent, int flags, int startId) {
             Log.i(TAG, "DaemonInnerService -> onStartCommand");
-            
+
             try {
                 // Cancel the notification from the main service
                 NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -163,11 +163,11 @@ public class DaemonService extends Service {
                     nm.cancel(NOTIFY_ID);
                     Log.d(TAG, "Notification cancelled successfully");
                 }
-                
+
                 // Stop this inner service
                 stopSelf();
                 return START_NOT_STICKY;
-                
+
             } catch (Exception e) {
                 Log.e(TAG, "Error in DaemonInnerService: " + e.getMessage(), e);
                 stopSelf();

@@ -12,7 +12,6 @@ import java.util.Map;
 
 import black.android.content.BRIIntentReceiver;
 import top.niunaijun.blackbox.BlackBoxCore;
-import top.niunaijun.blackbox.app.BActivityThread;
 import top.niunaijun.blackbox.proxy.record.ProxyBroadcastRecord;
 
 /**

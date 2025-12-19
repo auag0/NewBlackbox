@@ -48,21 +48,21 @@ public class IJobServiceProxy extends BinderInvocationStub {
                     Slog.w(TAG, "Schedule: No arguments provided, returning RESULT_FAILURE");
                     return 0; // RESULT_FAILURE
                 }
-                
+
                 if (args[0] == null) {
                     Slog.w(TAG, "Schedule: args[0] is null, returning RESULT_FAILURE");
                     return 0; // RESULT_FAILURE
                 }
-                
+
                 if (!(args[0] instanceof JobInfo)) {
                     Slog.w(TAG, "Schedule: args[0] is not JobInfo: " + args[0].getClass().getSimpleName());
                     // For non-JobInfo objects, try to handle them gracefully
                     return handleNonJobInfoSchedule(who, method, args);
                 }
-                
+
                 JobInfo jobInfo = (JobInfo) args[0];
                 Slog.d(TAG, "Schedule: Processing JobInfo for package: " + jobInfo.getService().getPackageName());
-                
+
                 // Try to schedule through BlackBox job manager first
                 try {
                     JobInfo proxyJobInfo = BlackBoxCore.getBJobManager().schedule(jobInfo);
@@ -74,19 +74,19 @@ public class IJobServiceProxy extends BinderInvocationStub {
                 } catch (Exception e) {
                     Slog.w(TAG, "Schedule: BlackBox job manager failed, trying system fallback", e);
                 }
-                
+
                 // Fallback: Try to schedule directly with UID spoofing
                 return scheduleWithUIDSpoofing(who, method, args, jobInfo);
-                
+
             } catch (Exception e) {
                 Slog.e(TAG, "Schedule: Error processing job", e);
-                
+
                 // Handle specific UID validation errors
                 if (isUIDValidationError(e)) {
                     Slog.w(TAG, "UID validation failed for job scheduling, returning RESULT_FAILURE: " + e.getCause().getMessage());
                     return 0; // RESULT_FAILURE - don't retry with same UID
                 }
-                
+
                 // For other errors, try to proceed with original method call as fallback
                 try {
                     return method.invoke(who, args);
@@ -96,7 +96,7 @@ public class IJobServiceProxy extends BinderInvocationStub {
                 }
             }
         }
-        
+
         /**
          * Handle non-JobInfo schedule requests (like WorkManager string IDs)
          */
@@ -106,7 +106,7 @@ public class IJobServiceProxy extends BinderInvocationStub {
                 if (args[0] instanceof String) {
                     String workId = (String) args[0];
                     Slog.d(TAG, "Schedule: Handling WorkManager string ID: " + workId);
-                    
+
                     // Create a minimal JobInfo that won't cause UID validation issues
                     JobInfo minimalJobInfo = createMinimalJobInfo(workId);
                     if (minimalJobInfo != null) {
@@ -114,7 +114,7 @@ public class IJobServiceProxy extends BinderInvocationStub {
                         return method.invoke(who, args);
                     }
                 }
-                
+
                 // Try original method for other types
                 return method.invoke(who, args);
             } catch (Exception e) {
@@ -122,7 +122,7 @@ public class IJobServiceProxy extends BinderInvocationStub {
                 return 0; // RESULT_FAILURE
             }
         }
-        
+
         /**
          * Try to schedule with UID spoofing to bypass validation
          */
@@ -131,14 +131,14 @@ public class IJobServiceProxy extends BinderInvocationStub {
                 // Get the target package name from the JobInfo
                 String targetPackage = jobInfo.getService().getPackageName();
                 Slog.d(TAG, "Schedule: Attempting UID spoofing for package: " + targetPackage);
-                
+
                 // Use UID spoofing helper to get the best UID for job scheduling
                 UIDSpoofingHelper.logUIDInfo("job_schedule", targetPackage);
-                
+
                 // Check if we need UID spoofing
                 if (UIDSpoofingHelper.needsUIDSpoofing("job_schedule", targetPackage)) {
                     Slog.d(TAG, "Schedule: UID spoofing needed, attempting to bypass validation");
-                    
+
                     // For now, we'll return failure but log the attempt
                     // In a full implementation, you'd need to actually spoof the UID at the system level
                     Slog.w(TAG, "Schedule: UID spoofing not fully implemented, returning RESULT_FAILURE");
@@ -147,13 +147,13 @@ public class IJobServiceProxy extends BinderInvocationStub {
                     Slog.d(TAG, "Schedule: No UID spoofing needed, proceeding normally");
                     return method.invoke(who, args);
                 }
-                
+
             } catch (Exception e) {
                 Slog.w(TAG, "Schedule: UID spoofing failed", e);
                 return 0; // RESULT_FAILURE
             }
         }
-        
+
         /**
          * Create a minimal JobInfo for WorkManager compatibility
          */
@@ -168,7 +168,7 @@ public class IJobServiceProxy extends BinderInvocationStub {
                 return null;
             }
         }
-        
+
         /**
          * Check if the error is a UID validation error
          */
@@ -177,12 +177,12 @@ public class IJobServiceProxy extends BinderInvocationStub {
                 String message = e.getCause().getMessage();
                 return message != null && message.contains("cannot schedule job");
             }
-            
+
             if (e.getCause() instanceof android.os.RemoteException) {
                 String message = e.getCause().getMessage();
                 return message != null && message.contains("cannot schedule job");
             }
-            
+
             return false;
         }
     }
@@ -197,7 +197,7 @@ public class IJobServiceProxy extends BinderInvocationStub {
                     Slog.w(TAG, "Cancel: JobId is null");
                     return method.invoke(who, args);
                 }
-                
+
                 args[0] = BlackBoxCore.getBJobManager()
                         .cancel(BActivityThread.getAppConfig().processName, jobId);
                 return method.invoke(who, args);
@@ -232,21 +232,21 @@ public class IJobServiceProxy extends BinderInvocationStub {
                     Slog.w(TAG, "Enqueue: No arguments provided, returning RESULT_FAILURE");
                     return 0; // RESULT_FAILURE
                 }
-                
+
                 if (args[0] == null) {
                     Slog.w(TAG, "Enqueue: args[0] is null, returning RESULT_FAILURE");
                     return 0; // RESULT_FAILURE
                 }
-                
+
                 if (!(args[0] instanceof JobInfo)) {
                     Slog.w(TAG, "Enqueue: args[0] is not JobInfo: " + args[0].getClass().getSimpleName());
                     // For non-JobInfo objects, try to handle them gracefully
                     return handleNonJobInfoEnqueue(who, method, args);
                 }
-                
+
                 JobInfo jobInfo = (JobInfo) args[0];
                 Slog.d(TAG, "Enqueue: Processing JobInfo for package: " + jobInfo.getService().getPackageName());
-                
+
                 // Try to enqueue through BlackBox job manager first
                 try {
                     JobInfo proxyJobInfo = BlackBoxCore.getBJobManager().schedule(jobInfo);
@@ -258,19 +258,19 @@ public class IJobServiceProxy extends BinderInvocationStub {
                 } catch (Exception e) {
                     Slog.w(TAG, "Enqueue: BlackBox job manager failed, trying system fallback", e);
                 }
-                
+
                 // Fallback: Try to enqueue directly with UID spoofing
                 return enqueueWithUIDSpoofing(who, method, args, jobInfo);
-                
+
             } catch (Exception e) {
                 Slog.e(TAG, "Enqueue: Error processing job", e);
-                
+
                 // Handle specific UID validation errors
                 if (isUIDValidationError(e)) {
                     Slog.w(TAG, "UID validation failed for job enqueuing, returning RESULT_FAILURE: " + e.getCause().getMessage());
                     return 0; // RESULT_FAILURE - don't retry with same UID
                 }
-                
+
                 // For other errors, try to proceed with original method call as fallback
                 try {
                     return method.invoke(who, args);
@@ -280,7 +280,7 @@ public class IJobServiceProxy extends BinderInvocationStub {
                 }
             }
         }
-        
+
         /**
          * Handle non-JobInfo enqueue requests (like WorkManager string IDs)
          */
@@ -290,7 +290,7 @@ public class IJobServiceProxy extends BinderInvocationStub {
                 if (args[0] instanceof String) {
                     String workId = (String) args[0];
                     Slog.d(TAG, "Enqueue: Handling WorkManager string ID: " + workId);
-                    
+
                     // Create a minimal JobInfo that won't cause UID validation issues
                     JobInfo minimalJobInfo = createMinimalJobInfo(workId);
                     if (minimalJobInfo != null) {
@@ -298,7 +298,7 @@ public class IJobServiceProxy extends BinderInvocationStub {
                         return method.invoke(who, args);
                     }
                 }
-                
+
                 // Try original method for other types
                 return method.invoke(who, args);
             } catch (Exception e) {
@@ -306,7 +306,7 @@ public class IJobServiceProxy extends BinderInvocationStub {
                 return 0; // RESULT_FAILURE
             }
         }
-        
+
         /**
          * Try to enqueue with UID spoofing to bypass validation
          */
@@ -315,14 +315,14 @@ public class IJobServiceProxy extends BinderInvocationStub {
                 // Get the target package name from the JobInfo
                 String targetPackage = jobInfo.getService().getPackageName();
                 Slog.d(TAG, "Enqueue: Attempting UID spoofing for package: " + targetPackage);
-                
+
                 // Use UID spoofing helper to get the best UID for job scheduling
                 UIDSpoofingHelper.logUIDInfo("job_enqueue", targetPackage);
-                
+
                 // Check if we need UID spoofing
                 if (UIDSpoofingHelper.needsUIDSpoofing("job_enqueue", targetPackage)) {
                     Slog.d(TAG, "Enqueue: UID spoofing needed, attempting to bypass validation");
-                    
+
                     // For now, we'll return failure but log the attempt
                     // In a full implementation, you'd need to actually spoof the UID at the system level
                     Slog.w(TAG, "Enqueue: UID spoofing not fully implemented, returning RESULT_FAILURE");
@@ -331,13 +331,13 @@ public class IJobServiceProxy extends BinderInvocationStub {
                     Slog.d(TAG, "Enqueue: No UID spoofing needed, proceeding normally");
                     return method.invoke(who, args);
                 }
-                
+
             } catch (Exception e) {
                 Slog.w(TAG, "Enqueue: UID spoofing failed", e);
                 return 0; // RESULT_FAILURE
             }
         }
-        
+
         /**
          * Create a minimal JobInfo for WorkManager compatibility
          */
@@ -352,7 +352,7 @@ public class IJobServiceProxy extends BinderInvocationStub {
                 return null;
             }
         }
-        
+
         /**
          * Check if the error is a UID validation error
          */
@@ -361,12 +361,12 @@ public class IJobServiceProxy extends BinderInvocationStub {
                 String message = e.getCause().getMessage();
                 return message != null && message.contains("cannot schedule job");
             }
-            
+
             if (e.getCause() instanceof android.os.RemoteException) {
                 String message = e.getCause().getMessage();
                 return message != null && message.contains("cannot schedule job");
             }
-            
+
             return false;
         }
     }

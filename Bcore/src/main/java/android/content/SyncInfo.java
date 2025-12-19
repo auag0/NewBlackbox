@@ -27,11 +27,14 @@ public class SyncInfo implements Parcelable {
     /**
      * Used when the caller receiving this object doesn't have permission to access the accounts
      * on device.
+     *
      * @See Manifest.permission.GET_ACCOUNTS
      */
     private static final Account REDACTED_ACCOUNT = new Account("*****", "*****");
 
-    /** @hide */
+    /**
+     * @hide
+     */
     public final int authorityId;
 
     /**
@@ -54,30 +57,39 @@ public class SyncInfo implements Parcelable {
     /**
      * Creates a SyncInfo object with an unusable Account. Used when the caller receiving this
      * object doesn't have access to the accounts on the device.
+     *
      * @See Manifest.permission.GET_ACCOUNTS
      * @hide
      */
     public static SyncInfo createAccountRedacted(
-        int authorityId, String authority, long startTime) {
+            int authorityId, String authority, long startTime) {
         throw new RuntimeException("Stub!");
     }
 
-    /** @hide */
+    /**
+     * @hide
+     */
     public SyncInfo(int authorityId, Account account, String authority, long startTime) {
         throw new RuntimeException("Stub!");
     }
 
-    /** @hide */
+    /**
+     * @hide
+     */
     public SyncInfo(SyncInfo other) {
         throw new RuntimeException("Stub!");
     }
 
-    /** @hide */
+    /**
+     * @hide
+     */
     public int describeContents() {
         return 0;
     }
 
-    /** @hide */
+    /**
+     * @hide
+     */
     public void writeToParcel(Parcel parcel, int flags) {
         parcel.writeInt(authorityId);
         parcel.writeParcelable(account, flags);

@@ -1,6 +1,5 @@
 package top.niunaijun.blackbox.fake.service;
 
-import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 
 import java.lang.reflect.Method;

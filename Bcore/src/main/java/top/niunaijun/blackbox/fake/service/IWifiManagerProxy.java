@@ -2,7 +2,6 @@ package top.niunaijun.blackbox.fake.service;
 
 import android.content.Context;
 import android.net.wifi.WifiInfo;
-import android.util.Log;
 
 import java.lang.reflect.Method;
 
@@ -47,10 +46,10 @@ public class IWifiManagerProxy extends BinderInvocationStub {
     @ProxyMethod("getConnectionInfo")
     public static class GetConnectionInfo extends MethodHook {
         /*
-        * It doesn't have public method to set BSSID and SSID fields in WifiInfo class,
-        * So the reflection framework invocation appeared.
-        * commented by BlackBoxing at 2022/03/08
-        * */
+         * It doesn't have public method to set BSSID and SSID fields in WifiInfo class,
+         * So the reflection framework invocation appeared.
+         * commented by BlackBoxing at 2022/03/08
+         * */
         @Override
         protected Object hook(Object who, Method method, Object[] args) throws Throwable {
             WifiInfo wifiInfo = (WifiInfo) method.invoke(who, args);

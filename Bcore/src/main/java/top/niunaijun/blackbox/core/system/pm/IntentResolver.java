@@ -74,7 +74,7 @@ public abstract class IntentResolver<F extends BPackage.IntentInfo, R extends Ob
         if (s1 != s2) {
             return false;
         }
-        for (int i=0; i<s1; i++) {
+        for (int i = 0; i < s1; i++) {
             if (!f2.hasAction(f1.getAction(i))) {
                 return false;
             }
@@ -84,7 +84,7 @@ public abstract class IntentResolver<F extends BPackage.IntentInfo, R extends Ob
         if (s1 != s2) {
             return false;
         }
-        for (int i=0; i<s1; i++) {
+        for (int i = 0; i < s1; i++) {
             if (!f2.hasCategory(f1.getCategory(i))) {
                 return false;
             }
@@ -94,7 +94,7 @@ public abstract class IntentResolver<F extends BPackage.IntentInfo, R extends Ob
         if (s1 != s2) {
             return false;
         }
-        for (int i=0; i<s1; i++) {
+        for (int i = 0; i < s1; i++) {
             if (!f2.hasDataScheme(f1.getDataScheme(i))) {
                 return false;
             }
@@ -110,7 +110,7 @@ public abstract class IntentResolver<F extends BPackage.IntentInfo, R extends Ob
     private ArrayList<F> collectFilters(F[] array, IntentFilter matching) {
         ArrayList<F> res = null;
         if (array != null) {
-            for (int i=0; i<array.length; i++) {
+            for (int i = 0; i < array.length; i++) {
                 F cur = array[i];
                 if (cur == null) {
                     break;
@@ -177,21 +177,21 @@ public abstract class IntentResolver<F extends BPackage.IntentInfo, R extends Ob
     }
 
     boolean dumpMap(PrintWriter out, String titlePrefix, String title,
-            String prefix, ArrayMap<String, F[]> map, String packageName,
-            boolean printFilter, boolean collapseDuplicates) {
+                    String prefix, ArrayMap<String, F[]> map, String packageName,
+                    boolean printFilter, boolean collapseDuplicates) {
         final String eprefix = prefix + "  ";
         final String fprefix = prefix + "    ";
         final ArrayMap<Object, MutableInt> found = new ArrayMap<>();
         boolean printedSomething = false;
         Printer printer = null;
-        for (int mapi=0; mapi<map.size(); mapi++) {
+        for (int mapi = 0; mapi < map.size(); mapi++) {
             F[] a = map.valueAt(mapi);
             final int N = a.length;
             boolean printedHeader = false;
             F filter;
             if (collapseDuplicates && !printFilter) {
                 found.clear();
-                for (int i=0; i<N && (filter=a[i]) != null; i++) {
+                for (int i = 0; i < N && (filter = a[i]) != null; i++) {
                     if (packageName != null && !isPackageForFilter(packageName, filter)) {
                         continue;
                     }
@@ -203,29 +203,35 @@ public abstract class IntentResolver<F extends BPackage.IntentInfo, R extends Ob
                         found.valueAt(index).value++;
                     }
                 }
-                for (int i=0; i<found.size(); i++) {
+                for (int i = 0; i < found.size(); i++) {
                     if (title != null) {
-                        out.print(titlePrefix); out.println(title);
+                        out.print(titlePrefix);
+                        out.println(title);
                         title = null;
                     }
                     if (!printedHeader) {
-                        out.print(eprefix); out.print(map.keyAt(mapi)); out.println(":");
+                        out.print(eprefix);
+                        out.print(map.keyAt(mapi));
+                        out.println(":");
                         printedHeader = true;
                     }
                     printedSomething = true;
                     dumpFilterLabel(out, fprefix, found.keyAt(i), found.valueAt(i).value);
                 }
             } else {
-                for (int i=0; i<N && (filter=a[i]) != null; i++) {
+                for (int i = 0; i < N && (filter = a[i]) != null; i++) {
                     if (packageName != null && !isPackageForFilter(packageName, filter)) {
                         continue;
                     }
                     if (title != null) {
-                        out.print(titlePrefix); out.println(title);
+                        out.print(titlePrefix);
+                        out.println(title);
                         title = null;
                     }
                     if (!printedHeader) {
-                        out.print(eprefix); out.print(map.keyAt(mapi)); out.println(":");
+                        out.print(eprefix);
+                        out.print(map.keyAt(mapi));
+                        out.println(":");
                         printedHeader = true;
                     }
                     printedSomething = true;
@@ -282,7 +288,7 @@ public abstract class IntentResolver<F extends BPackage.IntentInfo, R extends Ob
     }
 
     public List<R> queryIntentFromList(Intent intent, String resolvedType, boolean defaultOnly,
-            ArrayList<F[]> listCut, int userId) {
+                                       ArrayList<F[]> listCut, int userId) {
         ArrayList<R> resultList = new ArrayList<R>();
 
         final boolean debug = localLOGV ||
@@ -301,7 +307,7 @@ public abstract class IntentResolver<F extends BPackage.IntentInfo, R extends Ob
     }
 
     public List<R> queryIntent(Intent intent, String resolvedType, boolean defaultOnly,
-            int userId) {
+                               int userId) {
         String scheme = intent.getScheme();
 
         ArrayList<R> finalList = new ArrayList<R>();
@@ -310,8 +316,8 @@ public abstract class IntentResolver<F extends BPackage.IntentInfo, R extends Ob
                 ((intent.getFlags() & Intent.FLAG_DEBUG_LOG_RESOLUTION) != 0);
 
         if (debug) Slog.v(
-            TAG, "Resolving type=" + resolvedType + " scheme=" + scheme
-            + " defaultOnly=" + defaultOnly + " userId=" + userId + " of " + intent);
+                TAG, "Resolving type=" + resolvedType + " scheme=" + scheme
+                        + " defaultOnly=" + defaultOnly + " userId=" + userId + " of " + intent);
 
         F[] firstTypeCut = null;
         F[] secondTypeCut = null;
@@ -325,8 +331,8 @@ public abstract class IntentResolver<F extends BPackage.IntentInfo, R extends Ob
             if (slashpos > 0) {
                 final String baseType = resolvedType.substring(0, slashpos);
                 if (!baseType.equals("*")) {
-                    if (resolvedType.length() != slashpos+2
-                            || resolvedType.charAt(slashpos+1) != '*') {
+                    if (resolvedType.length() != slashpos + 2
+                            || resolvedType.charAt(slashpos + 1) != '*') {
                         // Not a wild card, so we can just look for all filters that
                         // completely match or wildcards whose base type matches.
                         firstTypeCut = mTypeToFilter.get(resolvedType);
@@ -394,7 +400,7 @@ public abstract class IntentResolver<F extends BPackage.IntentInfo, R extends Ob
 
         if (debug) {
             Slog.v(TAG, "Final result list:");
-            for (int i=0; i<finalList.size(); i++) {
+            for (int i = 0; i < finalList.size(); i++) {
                 Slog.v(TAG, "  " + finalList.get(i));
             }
         }
@@ -430,7 +436,7 @@ public abstract class IntentResolver<F extends BPackage.IntentInfo, R extends Ob
 
     @SuppressWarnings("unchecked")
     protected R newResult(F filter, int match, int userId) {
-        return (R)filter;
+        return (R) filter;
     }
 
     @SuppressWarnings("unchecked")
@@ -445,7 +451,8 @@ public abstract class IntentResolver<F extends BPackage.IntentInfo, R extends Ob
     }
 
     protected void dumpFilter(PrintWriter out, String prefix, F filter) {
-        out.print(prefix); out.println(filter);
+        out.print(prefix);
+        out.println(filter);
     }
 
     protected Object filterToLabel(F filter) {
@@ -453,25 +460,28 @@ public abstract class IntentResolver<F extends BPackage.IntentInfo, R extends Ob
     }
 
     protected void dumpFilterLabel(PrintWriter out, String prefix, Object label, int count) {
-        out.print(prefix); out.print(label); out.print(": "); out.println(count);
+        out.print(prefix);
+        out.print(label);
+        out.print(": ");
+        out.println(count);
     }
 
     private final void addFilter(ArrayMap<String, F[]> map, String name, F filter) {
         F[] array = map.get(name);
         if (array == null) {
             array = newArray(2);
-            map.put(name,  array);
+            map.put(name, array);
             array[0] = filter;
         } else {
             final int N = array.length;
             int i = N;
-            while (i > 0 && array[i-1] == null) {
+            while (i > 0 && array[i - 1] == null) {
                 i--;
             }
             if (i < N) {
                 array[i] = filter;
             } else {
-                F[] newa = newArray((N*3)/2);
+                F[] newa = newArray((N * 3) / 2);
                 System.arraycopy(array, 0, newa, 0, N);
                 newa[N] = filter;
                 map.put(name, newa);
@@ -541,7 +551,7 @@ public abstract class IntentResolver<F extends BPackage.IntentInfo, R extends Ob
     }
 
     private final int register_intent_filter(F filter, Iterator<String> i,
-            ArrayMap<String, F[]> dest, String prefix) {
+                                             ArrayMap<String, F[]> dest, String prefix) {
         if (i == null) {
             return 0;
         }
@@ -557,7 +567,7 @@ public abstract class IntentResolver<F extends BPackage.IntentInfo, R extends Ob
     }
 
     private final int unregister_intent_filter(F filter, Iterator<String> i,
-            ArrayMap<String, F[]> dest, String prefix) {
+                                               ArrayMap<String, F[]> dest, String prefix) {
         if (i == null) {
             return 0;
         }
@@ -573,18 +583,18 @@ public abstract class IntentResolver<F extends BPackage.IntentInfo, R extends Ob
     }
 
     private final void remove_all_objects(ArrayMap<String, F[]> map, String name,
-            Object object) {
+                                          Object object) {
         F[] array = map.get(name);
         if (array != null) {
-            int LAST = array.length-1;
+            int LAST = array.length - 1;
             while (LAST >= 0 && array[LAST] == null) {
                 LAST--;
             }
-            for (int idx=LAST; idx>=0; idx--) {
+            for (int idx = LAST; idx >= 0; idx--) {
                 if (array[idx] == object) {
                     final int remain = LAST - idx;
                     if (remain > 0) {
-                        System.arraycopy(array, idx+1, array, idx, remain);
+                        System.arraycopy(array, idx + 1, array, idx, remain);
                     }
                     array[LAST] = null;
                     LAST--;
@@ -592,9 +602,9 @@ public abstract class IntentResolver<F extends BPackage.IntentInfo, R extends Ob
             }
             if (LAST < 0) {
                 map.remove(name);
-            } else if (LAST < (array.length/2)) {
-                F[] newa = newArray(LAST+2);
-                System.arraycopy(array, 0, newa, 0, LAST+1);
+            } else if (LAST < (array.length / 2)) {
+                F[] newa = newArray(LAST + 2);
+                System.arraycopy(array, 0, newa, 0, LAST + 1);
                 map.put(name, newa);
             }
         }
@@ -609,8 +619,8 @@ public abstract class IntentResolver<F extends BPackage.IntentInfo, R extends Ob
     }
 
     private void buildResolveList(Intent intent, FastImmutableArraySet<String> categories,
-            boolean debug, boolean defaultOnly, String resolvedType, String scheme,
-            F[] src, List<R> dest, int userId) {
+                                  boolean debug, boolean defaultOnly, String resolvedType, String scheme,
+                                  F[] src, List<R> dest, int userId) {
         final String action = intent.getAction();
         final Uri data = intent.getData();
         final String packageName = intent.getPackage();
@@ -621,7 +631,7 @@ public abstract class IntentResolver<F extends BPackage.IntentInfo, R extends Ob
         boolean hasNonDefaults = false;
         int i;
         F filter;
-        for (i=0; i<N && (filter=src[i]) != null; i++) {
+        for (i = 0; i < N && (filter = src[i]) != null; i++) {
             int match;
             if (debug) Slog.v(TAG, "Matching against filter " + filter);
 
@@ -666,11 +676,21 @@ public abstract class IntentResolver<F extends BPackage.IntentInfo, R extends Ob
                 if (debug) {
                     String reason;
                     switch (match) {
-                        case IntentFilter.NO_MATCH_ACTION: reason = "action"; break;
-                        case IntentFilter.NO_MATCH_CATEGORY: reason = "category"; break;
-                        case IntentFilter.NO_MATCH_DATA: reason = "data"; break;
-                        case IntentFilter.NO_MATCH_TYPE: reason = "type"; break;
-                        default: reason = "unknown reason"; break;
+                        case IntentFilter.NO_MATCH_ACTION:
+                            reason = "action";
+                            break;
+                        case IntentFilter.NO_MATCH_CATEGORY:
+                            reason = "category";
+                            break;
+                        case IntentFilter.NO_MATCH_DATA:
+                            reason = "data";
+                            break;
+                        case IntentFilter.NO_MATCH_TYPE:
+                            reason = "type";
+                            break;
+                        default:
+                            reason = "unknown reason";
+                            break;
                     }
                     Slog.v(TAG, "  Filter did not match: " + reason);
                 }

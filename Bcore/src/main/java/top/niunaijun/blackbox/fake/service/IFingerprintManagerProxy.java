@@ -1,7 +1,6 @@
 package top.niunaijun.blackbox.fake.service;
 
 import android.content.Context;
-import android.os.IBinder;
 
 import black.android.os.BRServiceManager;
 import black.android.view.BRIGraphicsStatsStub;

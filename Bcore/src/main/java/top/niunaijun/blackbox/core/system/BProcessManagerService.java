@@ -127,7 +127,8 @@ public class BProcessManagerService implements ISystemService {
         synchronized (mProcessLock) {
             int callingUid = Binder.getCallingUid();
             int callingPid = Binder.getCallingPid();
-            ProcessRecord app = findProcessByPid(callingPid);;
+            ProcessRecord app = findProcessByPid(callingPid);
+            ;
             if (app == null) {
                 String stubProcessName = getProcessName(BlackBoxCore.getContext(), callingPid);
                 int bpid = parseBPid(stubProcessName);

@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.Locale;
 
 import top.niunaijun.blackbox.BlackBoxCore;
-import top.niunaijun.blackbox.app.BActivityThread;
 import top.niunaijun.blackbox.utils.FileUtils;
 
 /**
@@ -146,6 +145,6 @@ public class BEnvironment {
     }
 
     public static File getXSharedPreferences(String packageName, String prefFileName) {
-       return new File(BEnvironment.getDataDir(packageName, BlackBoxCore.getUserId()), "shared_prefs/" + prefFileName + ".xml");
+        return new File(BEnvironment.getDataDir(packageName, BlackBoxCore.getUserId()), "shared_prefs/" + prefFileName + ".xml");
     }
 }

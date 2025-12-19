@@ -151,7 +151,7 @@ import top.niunaijun.blackbox.utils.compat.PackageParserCompat;
                 // No data to load, start fresh
                 return;
             }
-            
+
             parcel.unmarshall(uidBytes, 0, uidBytes.length);
             parcel.setDataPosition(0);
 
@@ -169,7 +169,7 @@ import top.niunaijun.blackbox.utils.compat.PackageParserCompat;
             } catch (Exception deleteException) {
                 // Ignore delete errors
             }
-            
+
             // Reset to default values
             mCurrUid = 0;
             synchronized (mAppIds) {

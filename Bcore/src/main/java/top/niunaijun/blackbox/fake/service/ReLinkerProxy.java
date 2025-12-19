@@ -38,7 +38,7 @@ public class ReLinkerProxy extends ClassInvocationStub {
         @Override
         protected Object hook(Object who, Method method, Object[] args) throws Throwable {
             Slog.d(TAG, "ReLinker: loadLibrary called, intercepting to prevent MissingLibraryException");
-            
+
             // Return null to indicate success without actually loading the library
             // This prevents the MissingLibraryException from being thrown
             return null;
@@ -54,7 +54,7 @@ public class ReLinkerProxy extends ClassInvocationStub {
                 String libraryName = (String) args[1];
                 Slog.d(TAG, "ReLinker: loadLibrary called for: " + libraryName);
             }
-            
+
             // Return null to indicate success
             return null;
         }
@@ -70,7 +70,7 @@ public class ReLinkerProxy extends ClassInvocationStub {
                 String version = (String) args[2];
                 Slog.d(TAG, "ReLinker: loadLibrary called for: " + libraryName + " version: " + version);
             }
-            
+
             // Return null to indicate success
             return null;
         }

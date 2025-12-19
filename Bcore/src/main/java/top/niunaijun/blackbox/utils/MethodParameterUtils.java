@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 
 import top.niunaijun.blackbox.BlackBoxCore;
-import top.niunaijun.blackbox.app.BActivityThread;
 
 public class MethodParameterUtils {
 
@@ -144,10 +143,10 @@ public class MethodParameterUtils {
         }
     }
 
-    public static int toInt(Object obj){
-        if(obj instanceof Long){
+    public static int toInt(Object obj) {
+        if (obj instanceof Long) {
             return ((Long) obj).intValue();
         }
-        return (int)obj;
+        return (int) obj;
     }
 }

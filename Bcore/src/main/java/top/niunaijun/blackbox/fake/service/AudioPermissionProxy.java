@@ -1,7 +1,5 @@
 package top.niunaijun.blackbox.fake.service;
 
-import android.content.Context;
-import android.media.AudioManager;
 import android.os.IBinder;
 
 import java.lang.reflect.Method;
@@ -29,13 +27,13 @@ public class AudioPermissionProxy extends BinderInvocationStub {
             Slog.e(TAG, "Failed to get audio service binder");
             return null;
         }
-        
+
         try {
             // Try to get the audio service interface
             Class<?> stubClass = Class.forName("android.media.IAudioService$Stub");
             Method asInterfaceMethod = stubClass.getMethod("asInterface", IBinder.class);
             Object iface = asInterfaceMethod.invoke(null, binder);
-            
+
             if (iface != null) {
                 Slog.d(TAG, "Successfully obtained IAudioService interface");
                 return iface;

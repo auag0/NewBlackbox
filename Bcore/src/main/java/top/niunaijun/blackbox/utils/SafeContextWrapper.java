@@ -5,6 +5,7 @@ import android.content.ContextWrapper;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
+
 import top.niunaijun.blackbox.BlackBoxCore;
 
 /**
@@ -13,28 +14,28 @@ import top.niunaijun.blackbox.BlackBoxCore;
  */
 public class SafeContextWrapper extends ContextWrapper {
     private static final String TAG = "SafeContextWrapper";
-    
+
     private final Context fallbackContext;
     private final String packageName;
-    
+
     public SafeContextWrapper(Context base, String packageName) {
         super(base != null ? base : BlackBoxCore.getContext());
         this.fallbackContext = BlackBoxCore.getContext();
         this.packageName = packageName;
     }
-    
+
     @Override
     public Context getBaseContext() {
         Context base = super.getBaseContext();
         return base != null ? base : fallbackContext;
     }
-    
+
     @Override
     public String getPackageName() {
-        return packageName != null ? packageName : 
-               (getBaseContext() != null ? getBaseContext().getPackageName() : "unknown");
+        return packageName != null ? packageName :
+                (getBaseContext() != null ? getBaseContext().getPackageName() : "unknown");
     }
-    
+
     @Override
     public Resources getResources() {
         try {
@@ -45,7 +46,7 @@ public class SafeContextWrapper extends ContextWrapper {
         } catch (Exception e) {
             Slog.w(TAG, "Error getting resources from base context: " + e.getMessage());
         }
-        
+
         // Fallback to host context resources
         try {
             return fallbackContext.getResources();
@@ -61,7 +62,7 @@ public class SafeContextWrapper extends ContextWrapper {
             }
         }
     }
-    
+
     @Override
     public PackageManager getPackageManager() {
         try {
@@ -72,7 +73,7 @@ public class SafeContextWrapper extends ContextWrapper {
         } catch (Exception e) {
             Slog.w(TAG, "Error getting package manager from base context: " + e.getMessage());
         }
-        
+
         // Fallback to host context package manager
         try {
             return fallbackContext.getPackageManager();
@@ -81,7 +82,7 @@ public class SafeContextWrapper extends ContextWrapper {
             return null;
         }
     }
-    
+
     @Override
     public Context getApplicationContext() {
         try {
@@ -92,10 +93,10 @@ public class SafeContextWrapper extends ContextWrapper {
         } catch (Exception e) {
             Slog.w(TAG, "Error getting application context from base context: " + e.getMessage());
         }
-        
+
         return fallbackContext.getApplicationContext();
     }
-    
+
     @Override
     public ClassLoader getClassLoader() {
         try {
@@ -106,10 +107,10 @@ public class SafeContextWrapper extends ContextWrapper {
         } catch (Exception e) {
             Slog.w(TAG, "Error getting class loader from base context: " + e.getMessage());
         }
-        
+
         return fallbackContext.getClassLoader();
     }
-    
+
     @Override
     public android.content.ContentResolver getContentResolver() {
         try {
@@ -120,10 +121,10 @@ public class SafeContextWrapper extends ContextWrapper {
         } catch (Exception e) {
             Slog.w(TAG, "Error getting content resolver from base context: " + e.getMessage());
         }
-        
+
         return fallbackContext.getContentResolver();
     }
-    
+
     @Override
     public AssetManager getAssets() {
         try {
@@ -134,10 +135,10 @@ public class SafeContextWrapper extends ContextWrapper {
         } catch (Exception e) {
             Slog.w(TAG, "Error getting assets from base context: " + e.getMessage());
         }
-        
+
         return fallbackContext.getAssets();
     }
-    
+
     @Override
     public Object getSystemService(String name) {
         try {
@@ -148,7 +149,7 @@ public class SafeContextWrapper extends ContextWrapper {
         } catch (Exception e) {
             Slog.w(TAG, "Error getting system service from base context: " + e.getMessage());
         }
-        
+
         return fallbackContext.getSystemService(name);
     }
 }

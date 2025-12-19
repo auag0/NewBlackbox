@@ -1,5 +1,7 @@
 package top.niunaijun.blackbox.app.dispatcher;
 
+import static android.app.Service.START_NOT_STICKY;
+
 import android.app.Service;
 import android.content.Intent;
 import android.content.pm.ServiceInfo;
@@ -11,12 +13,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import top.niunaijun.blackbox.BlackBoxCore;
-import top.niunaijun.blackbox.app.BActivityThread;
 import top.niunaijun.blackbox.entity.ServiceRecord;
 import top.niunaijun.blackbox.entity.UnbindRecord;
 import top.niunaijun.blackbox.proxy.record.ProxyServiceRecord;
-
-import static android.app.Service.START_NOT_STICKY;
 
 
 /**

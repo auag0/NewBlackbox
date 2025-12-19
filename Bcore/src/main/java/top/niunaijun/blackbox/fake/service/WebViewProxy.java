@@ -1,21 +1,19 @@
 package top.niunaijun.blackbox.fake.service;
 
 import android.content.Context;
-import android.content.pm.PackageInfo;
 import android.os.Build;
-import android.webkit.WebView;
-import android.webkit.WebViewDatabase;
 import android.webkit.WebSettings;
+import android.webkit.WebView;
 
 import java.io.File;
 import java.lang.reflect.Method;
 
 import top.niunaijun.blackbox.BlackBoxCore;
+import top.niunaijun.blackbox.app.BActivityThread;
 import top.niunaijun.blackbox.fake.hook.ClassInvocationStub;
 import top.niunaijun.blackbox.fake.hook.MethodHook;
 import top.niunaijun.blackbox.fake.hook.ProxyMethod;
 import top.niunaijun.blackbox.utils.Slog;
-import top.niunaijun.blackbox.app.BActivityThread;
 
 /**
  * Enhanced WebView proxy to handle WebView data directory conflicts, initialization issues,
@@ -94,7 +92,7 @@ public class WebViewProxy extends ClassInvocationStub {
                 return createFallbackWebView(context);
             }
         }
-        
+
         private void configureWebView(WebView webView, Context context) {
             try {
                 WebSettings settings = webView.getSettings();
@@ -122,7 +120,7 @@ public class WebViewProxy extends ClassInvocationStub {
                 Slog.w(TAG, "WebView: Failed to configure settings", e);
             }
         }
-        
+
         private WebView createFallbackWebView(Context context) {
             try {
                 if (context != null) {
@@ -152,7 +150,7 @@ public class WebViewProxy extends ClassInvocationStub {
                 if (args != null && args.length > 0) {
                     String suffix = (String) args[0];
                     Slog.d(TAG, "WebView: setDataDirectorySuffix called with: " + suffix);
-                    
+
                     // Create a unique suffix for each virtual app and process
                     Context context = BlackBoxCore.getContext();
                     String packageName = context != null ? context.getPackageName() : "unknown";
@@ -161,7 +159,7 @@ public class WebViewProxy extends ClassInvocationStub {
                     args[0] = uniqueSuffix;
                     Slog.d(TAG, "WebView: Using unique suffix: " + uniqueSuffix);
                 }
-                
+
                 return method.invoke(who, args);
             } catch (Exception e) {
                 Slog.w(TAG, "WebView: setDataDirectorySuffix failed, continuing without suffix", e);
@@ -177,24 +175,24 @@ public class WebViewProxy extends ClassInvocationStub {
         protected Object hook(Object who, Method method, Object[] args) throws Throwable {
             try {
                 Slog.d(TAG, "WebView: getDataDirectory called, returning unique directory");
-                
+
                 // Return a unique data directory for each virtual app and process
                 Context context = BlackBoxCore.getContext();
                 if (context != null) {
                     String packageName = context.getPackageName();
                     String userId = String.valueOf(BActivityThread.getUserId());
                     String uniqueDir = context.getApplicationInfo().dataDir + "/webview_" + userId + "_" + android.os.Process.myPid();
-                    
+
                     // Ensure directory exists
                     File dir = new File(uniqueDir);
                     if (!dir.exists()) {
                         dir.mkdirs();
                     }
-                    
+
                     Slog.d(TAG, "WebView: Returning unique data directory: " + uniqueDir);
                     return uniqueDir;
                 }
-                
+
                 return method.invoke(who, args);
             } catch (Exception e) {
                 Slog.w(TAG, "WebView: getDataDirectory failed, returning fallback", e);
@@ -210,7 +208,7 @@ public class WebViewProxy extends ClassInvocationStub {
         @Override
         protected Object hook(Object who, Method method, Object[] args) throws Throwable {
             Slog.d(TAG, "WebView: getInstance called for WebViewDatabase");
-            
+
             try {
                 // Get the context from BlackBox
                 Context context = BlackBoxCore.getContext();
@@ -219,12 +217,12 @@ public class WebViewProxy extends ClassInvocationStub {
                     String packageName = context.getPackageName();
                     String userId = String.valueOf(BActivityThread.getUserId());
                     String uniqueDbPath = context.getApplicationInfo().dataDir + "/webview_db_" + userId + "_" + android.os.Process.myPid();
-                    
+
                     // Set database path
                     System.setProperty("webview.database.path", uniqueDbPath);
                     Slog.d(TAG, "WebView: Set unique database path: " + uniqueDbPath);
                 }
-                
+
                 return method.invoke(who, args);
             } catch (Exception e) {
                 Slog.w(TAG, "WebView: Failed to get WebViewDatabase instance", e);
@@ -241,14 +239,14 @@ public class WebViewProxy extends ClassInvocationStub {
             if (args != null && args.length > 0) {
                 String url = (String) args[0];
                 Slog.d(TAG, "WebView: loadUrl called with: " + url);
-                
+
                 // Handle common URL issues
                 if (url != null && url.startsWith("file://")) {
                     // Ensure file URLs work in virtual environment
                     Slog.d(TAG, "WebView: Handling file URL: " + url);
                 }
             }
-            
+
             return method.invoke(who, args);
         }
     }

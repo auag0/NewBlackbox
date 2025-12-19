@@ -25,10 +25,10 @@ public class SyncStatusInfo implements Parcelable {
     public long initialFailureTime;
     public boolean pending;
     public boolean initialize;
-    
-  // Warning: It is up to the external caller to ensure there are
-  // no race conditions when accessing this list
-  private ArrayList<Long> periodicSyncTimes;
+
+    // Warning: It is up to the external caller to ensure there are
+    // no race conditions when accessing this list
+    private ArrayList<Long> periodicSyncTimes;
 
     private static final String TAG = "Sync";
 
@@ -99,7 +99,7 @@ public class SyncStatusInfo implements Parcelable {
                 periodicSyncTimes = null;
             } else {
                 periodicSyncTimes = new ArrayList<Long>();
-                for (int i=0; i<N; i++) {
+                for (int i = 0; i < N; i++) {
                     periodicSyncTimes.add(parcel.readLong());
                 }
             }

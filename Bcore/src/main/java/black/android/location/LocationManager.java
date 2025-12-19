@@ -58,7 +58,7 @@ public interface LocationManager {
     @BClassName("android.location.LocationManager$GnssStatusListenerTransport")
     interface GpsStatusListenerTransportVIVO {
         @BMethod
-        void onSvStatusChanged(int int0, int[] ints1, float[] floats2, float[] floats3, float[] floats4, int int5, int int6, int int7,  long[] longs8);
+        void onSvStatusChanged(int int0, int[] ints1, float[] floats2, float[] floats3, float[] floats4, int int5, int int6, int int7, long[] longs8);
     }
 
     @BClassName("android.location.LocationManager$GpsStatusListenerTransport")

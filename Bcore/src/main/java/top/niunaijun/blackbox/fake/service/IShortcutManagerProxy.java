@@ -62,7 +62,7 @@ public class IShortcutManagerProxy extends BinderInvocationStub {
         addMethodHook(new PkgMethodProxy("removeAllDynamicShortcuts"));
         addMethodHook(new PkgMethodProxy("removeDynamicShortcuts"));
         addMethodHook(new PkgMethodProxy("removeLongLivedShortcuts"));
-        addMethodHook(new PkgMethodProxy("getManifestShortcuts"){
+        addMethodHook(new PkgMethodProxy("getManifestShortcuts") {
             @Override
             protected Object hook(Object who, Method method, Object[] args) throws Throwable {
                 return ParceledListSliceCompat.create(new ArrayList<ShortcutInfo>());

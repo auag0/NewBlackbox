@@ -5,9 +5,9 @@ import java.lang.reflect.Method;
 import top.niunaijun.blackbox.fake.hook.ClassInvocationStub;
 import top.niunaijun.blackbox.fake.hook.MethodHook;
 import top.niunaijun.blackbox.fake.hook.ProxyMethod;
-import top.niunaijun.blackbox.utils.Slog;
-import top.niunaijun.blackbox.utils.AttributionSourceUtils;
 import top.niunaijun.blackbox.util.XiaomiDeviceDetector;
+import top.niunaijun.blackbox.utils.AttributionSourceUtils;
+import top.niunaijun.blackbox.utils.Slog;
 
 /**
  * IXiaomiSettings Proxy to handle MIUI-specific Settings access issues on Android 12+
@@ -30,7 +30,7 @@ public class IXiaomiSettingsProxy extends ClassInvocationStub {
     protected void inject(Object base, Object proxy) {
         // This proxy handles Xiaomi-specific Settings access issues globally
         if (XiaomiDeviceDetector.isXiaomiDevice()) {
-            Slog.d(TAG, "IXiaomiSettings proxy initialized for MIUI Settings UID mismatch prevention on " + 
+            Slog.d(TAG, "IXiaomiSettings proxy initialized for MIUI Settings UID mismatch prevention on " +
                     XiaomiDeviceDetector.getDeviceModel() + " (MIUI " + XiaomiDeviceDetector.getMiuiVersion() + ")");
         } else {
             Slog.d(TAG, "IXiaomiSettings proxy initialized for MIUI Settings UID mismatch prevention");
@@ -50,7 +50,7 @@ public class IXiaomiSettingsProxy extends ClassInvocationStub {
             try {
                 // Fix AttributionSource in args before calling original method
                 AttributionSourceUtils.fixAttributionSourceInArgs(args);
-                
+
                 // Call original method
                 return method.invoke(who, args);
             } catch (SecurityException e) {
@@ -77,7 +77,7 @@ public class IXiaomiSettingsProxy extends ClassInvocationStub {
             try {
                 // Fix AttributionSource in args before calling original method
                 AttributionSourceUtils.fixAttributionSourceInArgs(args);
-                
+
                 // Call original method
                 return method.invoke(who, args);
             } catch (SecurityException e) {
@@ -104,7 +104,7 @@ public class IXiaomiSettingsProxy extends ClassInvocationStub {
             try {
                 // Fix AttributionSource in args before calling original method
                 AttributionSourceUtils.fixAttributionSourceInArgs(args);
-                
+
                 // Call original method
                 return method.invoke(who, args);
             } catch (SecurityException e) {
@@ -131,7 +131,7 @@ public class IXiaomiSettingsProxy extends ClassInvocationStub {
             try {
                 // Fix AttributionSource in args before calling original method
                 AttributionSourceUtils.fixAttributionSourceInArgs(args);
-                
+
                 // Call original method
                 return method.invoke(who, args);
             } catch (SecurityException e) {
@@ -158,7 +158,7 @@ public class IXiaomiSettingsProxy extends ClassInvocationStub {
             try {
                 // Fix AttributionSource in args before calling original method
                 AttributionSourceUtils.fixAttributionSourceInArgs(args);
-                
+
                 // Call original method
                 return method.invoke(who, args);
             } catch (SecurityException e) {
@@ -185,7 +185,7 @@ public class IXiaomiSettingsProxy extends ClassInvocationStub {
             try {
                 // Fix AttributionSource in args before calling original method
                 AttributionSourceUtils.fixAttributionSourceInArgs(args);
-                
+
                 // Call original method
                 return method.invoke(who, args);
             } catch (SecurityException e) {

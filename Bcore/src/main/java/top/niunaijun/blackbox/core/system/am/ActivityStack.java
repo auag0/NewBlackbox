@@ -1,5 +1,7 @@
 package top.niunaijun.blackbox.core.system.am;
 
+import static android.content.pm.PackageManager.GET_ACTIVITIES;
+
 import android.app.ActivityManager;
 import android.content.ComponentName;
 import android.content.Context;
@@ -40,8 +42,6 @@ import top.niunaijun.blackbox.proxy.record.ProxyActivityRecord;
 import top.niunaijun.blackbox.utils.ComponentUtils;
 import top.niunaijun.blackbox.utils.Slog;
 import top.niunaijun.blackbox.utils.compat.ActivityManagerCompat;
-
-import static android.content.pm.PackageManager.GET_ACTIVITIES;
 
 /**
  * updated by alex5402 on 4/5/21.

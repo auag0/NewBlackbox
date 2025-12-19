@@ -14,7 +14,6 @@ import top.niunaijun.blackbox.fake.hook.ClassInvocationStub;
 import top.niunaijun.blackbox.fake.hook.MethodHook;
 import top.niunaijun.blackbox.fake.hook.ProxyMethod;
 import top.niunaijun.blackbox.utils.Slog;
-import top.niunaijun.blackbox.app.BActivityThread;
 
 /**
  * Google Account Manager proxy to handle authentication and account-related issues
@@ -56,7 +55,7 @@ public class GoogleAccountManagerProxy extends ClassInvocationStub {
         protected Object hook(Object who, Method method, Object[] args) throws Throwable {
             try {
                 Slog.d(TAG, "GoogleAccountManager: Handling getAccounts call");
-                
+
                 // Try to get real accounts first
                 Object result = method.invoke(who, args);
                 if (result != null && result instanceof Account[]) {
@@ -66,11 +65,11 @@ public class GoogleAccountManagerProxy extends ClassInvocationStub {
                         return result;
                     }
                 }
-                
+
                 // Return mock Google account if no real accounts found
                 Slog.d(TAG, "GoogleAccountManager: No real accounts found, returning mock account");
                 return createMockGoogleAccounts();
-                
+
             } catch (Exception e) {
                 Slog.w(TAG, "GoogleAccountManager: GetAccounts error, returning mock accounts", e);
                 return createMockGoogleAccounts();
@@ -84,21 +83,21 @@ public class GoogleAccountManagerProxy extends ClassInvocationStub {
         protected Object hook(Object who, Method method, Object[] args) throws Throwable {
             try {
                 Slog.d(TAG, "GoogleAccountManager: Handling getAccountsByType call");
-                
+
                 if (args != null && args.length > 0) {
                     String accountType = (String) args[0];
                     Slog.d(TAG, "GoogleAccountManager: Requesting accounts of type: " + accountType);
-                    
+
                     // For Google accounts, return mock accounts
                     if ("com.google".equals(accountType)) {
                         Slog.d(TAG, "GoogleAccountManager: Returning mock Google accounts");
                         return createMockGoogleAccounts();
                     }
                 }
-                
+
                 // Try to get real accounts
                 return method.invoke(who, args);
-                
+
             } catch (Exception e) {
                 Slog.w(TAG, "GoogleAccountManager: GetAccountsByType error, returning mock accounts", e);
                 return createMockGoogleAccounts();
@@ -298,18 +297,18 @@ public class GoogleAccountManagerProxy extends ClassInvocationStub {
     private static Account[] createMockGoogleAccounts() {
         try {
             List<Account> accounts = new ArrayList<>();
-            
+
             // Create a primary mock Google account
             Account primaryAccount = new Account("mock.user@gmail.com", "com.google");
             accounts.add(primaryAccount);
-            
+
             // Create a secondary mock Google account
             Account secondaryAccount = new Account("virtual.user@gmail.com", "com.google");
             accounts.add(secondaryAccount);
-            
+
             Slog.d(TAG, "GoogleAccountManager: Created " + accounts.size() + " mock Google accounts");
             return accounts.toArray(new Account[0]);
-            
+
         } catch (Exception e) {
             Slog.e(TAG, "GoogleAccountManager: Failed to create mock accounts", e);
             return new Account[0];
@@ -325,10 +324,10 @@ public class GoogleAccountManagerProxy extends ClassInvocationStub {
             if (context != null) {
                 String packageName = context.getPackageName();
                 return packageName != null && (
-                    packageName.startsWith("com.google.") ||
-                    packageName.startsWith("com.android.") ||
-                    packageName.contains("gms") ||
-                    packageName.contains("google")
+                        packageName.startsWith("com.google.") ||
+                                packageName.startsWith("com.android.") ||
+                                packageName.contains("gms") ||
+                                packageName.contains("google")
                 );
             }
         } catch (Exception e) {

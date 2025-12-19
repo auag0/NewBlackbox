@@ -1,5 +1,7 @@
 package top.niunaijun.blackbox.core.system.am;
 
+import static android.content.pm.PackageManager.GET_META_DATA;
+
 import android.app.ActivityManager;
 import android.content.ComponentName;
 import android.content.Context;
@@ -27,8 +29,6 @@ import top.niunaijun.blackbox.entity.am.ReceiverData;
 import top.niunaijun.blackbox.entity.am.RunningAppProcessInfo;
 import top.niunaijun.blackbox.entity.am.RunningServiceInfo;
 import top.niunaijun.blackbox.utils.Slog;
-
-import static android.content.pm.PackageManager.GET_META_DATA;
 
 /**
  * updated by alex5402 on 3/31/21.

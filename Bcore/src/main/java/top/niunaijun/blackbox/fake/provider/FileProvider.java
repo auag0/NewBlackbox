@@ -1,5 +1,8 @@
 package top.niunaijun.blackbox.fake.provider;
 
+import static org.xmlpull.v1.XmlPullParser.END_DOCUMENT;
+import static org.xmlpull.v1.XmlPullParser.START_TAG;
+
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.Context;
@@ -11,7 +14,6 @@ import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Environment;
 import android.os.ParcelFileDescriptor;
 import android.provider.OpenableColumns;
 import android.text.TextUtils;
@@ -27,9 +29,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.xmlpull.v1.XmlPullParser.END_DOCUMENT;
-import static org.xmlpull.v1.XmlPullParser.START_TAG;
-
 /**
  * updated by alex5402 on 4/18/21.
  * * ∧＿∧
@@ -40,7 +39,7 @@ import static org.xmlpull.v1.XmlPullParser.START_TAG;
  */
 public class FileProvider extends ContentProvider {
     private static final String[] COLUMNS = {
-            OpenableColumns.DISPLAY_NAME, OpenableColumns.SIZE };
+            OpenableColumns.DISPLAY_NAME, OpenableColumns.SIZE};
 
     private static final String
             META_DATA_FILE_PROVIDER_PATHS = "android.support.FILE_PROVIDER_PATHS";
@@ -64,7 +63,7 @@ public class FileProvider extends ContentProvider {
 
     /**
      * The default FileProvider implementation does not need to be initialized. If you want to
-     * override this method, you must provide your own subclass of 
+     * override this method, you must provide your own subclass of
      */
     @Override
     public boolean onCreate() {
@@ -76,7 +75,7 @@ public class FileProvider extends ContentProvider {
      * information about the provider.
      *
      * @param context A {@link Context} for the current component.
-     * @param info A {@link ProviderInfo} for the new provider.
+     * @param info    A {@link ProviderInfo} for the new provider.
      */
     @Override
     public void attachInfo(Context context, ProviderInfo info) {
@@ -104,14 +103,14 @@ public class FileProvider extends ContentProvider {
      * <code>content</code> {@link Uri} for file paths defined in their <code>&lt;paths&gt;</code>
      * meta-data element. See the Class Overview for more information.
      *
-     * @param context A {@link Context} for the current component.
+     * @param context   A {@link Context} for the current component.
      * @param authority The authority of a {@link FileProvider} defined in a
-     *            {@code <provider>} element in your app's manifest.
-     * @param file A {@link File} pointing to the filename for which you want a
-     * <code>content</code> {@link Uri}.
+     *                  {@code <provider>} element in your app's manifest.
+     * @param file      A {@link File} pointing to the filename for which you want a
+     *                  <code>content</code> {@link Uri}.
      * @return A content URI for the file.
      * @throws IllegalArgumentException When the given {@link File} is outside
-     * the paths supported by the provider.
+     *                                  the paths supported by the provider.
      */
     public static Uri getUriForFile(Context context, String authority,
                                     File file) {
@@ -120,7 +119,7 @@ public class FileProvider extends ContentProvider {
     }
 
     public static File getFileForUri(Context context, String authority,
-                                    Uri uri) {
+                                     Uri uri) {
         final PathStrategy strategy = getPathStrategy(context, authority);
         return strategy.getFileForUri(uri);
     }
@@ -128,7 +127,7 @@ public class FileProvider extends ContentProvider {
     /**
      * Use a content URI returned by
      * {@link #getUriForFile(Context, String, File) getUriForFile()} to get information about a file
-     * managed by the 
+     * managed by the
      * FileProvider reports the column names defined in {@link android.provider.OpenableColumns}:
      * <ul>
      * <li>{@link android.provider.OpenableColumns#DISPLAY_NAME}</li>
@@ -138,18 +137,18 @@ public class FileProvider extends ContentProvider {
      * {@link ContentProvider#query(Uri, String[], String, String[], String)
      * ContentProvider.query()}.
      *
-     * @param uri A content URI returned by {@link #getUriForFile}.
-     * @param projection The list of columns to put into the {@link Cursor}. If null all columns are
-     * included.
-     * @param selection Selection criteria to apply. If null then all data that matches the content
-     * URI is returned.
+     * @param uri           A content URI returned by {@link #getUriForFile}.
+     * @param projection    The list of columns to put into the {@link Cursor}. If null all columns are
+     *                      included.
+     * @param selection     Selection criteria to apply. If null then all data that matches the content
+     *                      URI is returned.
      * @param selectionArgs An array of {@link java.lang.String}, containing arguments to bind to
-     * the <i>selection</i> parameter. The <i>query</i> method scans <i>selection</i> from left to
-     * right and iterates through <i>selectionArgs</i>, replacing the current "?" character in
-     * <i>selection</i> with the value at the current position in <i>selectionArgs</i>. The
-     * values are bound to <i>selection</i> as {@link java.lang.String} values.
-     * @param sortOrder A {@link java.lang.String} containing the column name(s) on which to sort
-     * the resulting {@link Cursor}.
+     *                      the <i>selection</i> parameter. The <i>query</i> method scans <i>selection</i> from left to
+     *                      right and iterates through <i>selectionArgs</i>, replacing the current "?" character in
+     *                      <i>selection</i> with the value at the current position in <i>selectionArgs</i>. The
+     *                      values are bound to <i>selection</i> as {@link java.lang.String} values.
+     * @param sortOrder     A {@link java.lang.String} containing the column name(s) on which to sort
+     *                      the resulting {@link Cursor}.
      * @return A {@link Cursor} containing the results of the query.
      *
      */
@@ -190,7 +189,7 @@ public class FileProvider extends ContentProvider {
      * {@link #getUriForFile(Context, String, File) getUriForFile()}.
      *
      * @param uri A content URI returned by
-     * {@link #getUriForFile(Context, String, File) getUriForFile()}.
+     *            {@link #getUriForFile(Context, String, File) getUriForFile()}.
      * @return If the associated file has an extension, the MIME type associated with that
      * extension; otherwise <code>application/octet-stream</code>.
      */
@@ -235,9 +234,9 @@ public class FileProvider extends ContentProvider {
      * returned by {@link #getUriForFile(Context, String, File) getUriForFile()}. Notice that this
      * method does <b>not</b> throw an {@link java.io.IOException}; you must check its return value.
      *
-     * @param uri A content URI for a file, as returned by
-     * {@link #getUriForFile(Context, String, File) getUriForFile()}.
-     * @param selection Ignored. Set to {@code null}.
+     * @param uri           A content URI for a file, as returned by
+     *                      {@link #getUriForFile(Context, String, File) getUriForFile()}.
+     * @param selection     Ignored. Set to {@code null}.
      * @param selectionArgs Ignored. Set to {@code null}.
      * @return 1 if the delete succeeds; otherwise, 0.
      */
@@ -255,13 +254,13 @@ public class FileProvider extends ContentProvider {
      * {@link Uri}. To get the {@link ParcelFileDescriptor}, call
      * {@link android.content.ContentResolver#openFileDescriptor(Uri, String)
      * ContentResolver.openFileDescriptor}.
+     * <p>
+     * To override this method, you must provide your own subclass of
      *
-     * To override this method, you must provide your own subclass of 
-     *
-     * @param uri A content URI associated with a file, as returned by
-     * {@link #getUriForFile(Context, String, File) getUriForFile()}.
+     * @param uri  A content URI associated with a file, as returned by
+     *             {@link #getUriForFile(Context, String, File) getUriForFile()}.
      * @param mode Access mode for the file. May be "r" for read-only access, "rw" for read and
-     * write access, or "rwt" for read and write access that truncates any existing file.
+     *             write access, or "rwt" for read and write access that truncates any existing file.
      * @return A new {@link ParcelFileDescriptor} with which you can access the file.
      */
     @Override

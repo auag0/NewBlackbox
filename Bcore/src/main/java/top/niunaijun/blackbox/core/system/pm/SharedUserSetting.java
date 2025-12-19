@@ -82,7 +82,7 @@ public final class SharedUserSetting implements Parcelable {
                 // No data to load, start fresh
                 return;
             }
-            
+
             // Check if this is old format data (before seInfoTargetSdkVersion was added)
             // If the data is too small, it's likely the old format
             if (sharedUsersBytes.length < 100) { // Arbitrary threshold for old format
@@ -93,7 +93,7 @@ public final class SharedUserSetting implements Parcelable {
                 }
                 return;
             }
-            
+
             parcel.unmarshall(sharedUsersBytes, 0, sharedUsersBytes.length);
             parcel.setDataPosition(0);
 
@@ -110,7 +110,7 @@ public final class SharedUserSetting implements Parcelable {
             } catch (Exception deleteException) {
                 // Ignore delete errors
             }
-            
+
             // Clear the shared users map to start fresh
             synchronized (sSharedUsers) {
                 sSharedUsers.clear();

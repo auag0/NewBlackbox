@@ -5,9 +5,9 @@ import android.content.pm.PackageInfo;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 
+import top.niunaijun.blackbox.fake.hook.ClassInvocationStub;
 import top.niunaijun.blackbox.fake.hook.MethodHook;
 import top.niunaijun.blackbox.fake.hook.ProxyMethod;
-import top.niunaijun.blackbox.fake.hook.ClassInvocationStub;
 import top.niunaijun.blackbox.utils.Slog;
 
 /**
@@ -42,7 +42,7 @@ public class IWebViewUpdateServiceProxy extends ClassInvocationStub {
         @Override
         protected Object hook(Object who, Method method, Object[] args) throws Throwable {
             Slog.d(TAG, "WebViewUpdateService: getCurrentWebViewPackage called");
-            
+
             try {
                 // Try to get the current WebView package from the system
                 Object result = method.invoke(who, args);
@@ -53,7 +53,7 @@ public class IWebViewUpdateServiceProxy extends ClassInvocationStub {
             } catch (Exception e) {
                 Slog.w(TAG, "WebViewUpdateService: Failed to get current WebView package", e);
             }
-            
+
             // Return null to let the system use the default WebView provider
             Slog.d(TAG, "WebViewUpdateService: Returning null to use system default");
             return null;
@@ -66,7 +66,7 @@ public class IWebViewUpdateServiceProxy extends ClassInvocationStub {
         @Override
         protected Object hook(Object who, Method method, Object[] args) throws Throwable {
             Slog.d(TAG, "WebViewUpdateService: getValidWebViewPackages called");
-            
+
             try {
                 // Try to get valid WebView packages from the system
                 Object result = method.invoke(who, args);
@@ -80,7 +80,7 @@ public class IWebViewUpdateServiceProxy extends ClassInvocationStub {
             } catch (Exception e) {
                 Slog.w(TAG, "WebViewUpdateService: Failed to get valid WebView packages", e);
             }
-            
+
             // Return empty array to prevent WebView provider conflicts
             Slog.d(TAG, "WebViewUpdateService: Returning empty array to prevent conflicts");
             return new PackageInfo[0];
@@ -103,7 +103,7 @@ public class IWebViewUpdateServiceProxy extends ClassInvocationStub {
         @Override
         protected Object hook(Object who, Method method, Object[] args) throws Throwable {
             Slog.d(TAG, "WebViewUpdateService: getWebViewPackages called");
-            
+
             try {
                 // Try to get WebView packages from the system
                 Object result = method.invoke(who, args);
@@ -114,7 +114,7 @@ public class IWebViewUpdateServiceProxy extends ClassInvocationStub {
             } catch (Exception e) {
                 Slog.w(TAG, "WebViewUpdateService: Failed to get WebView packages", e);
             }
-            
+
             // Return empty list if system call fails
             return new ArrayList<>();
         }
@@ -126,7 +126,7 @@ public class IWebViewUpdateServiceProxy extends ClassInvocationStub {
         @Override
         protected Object hook(Object who, Method method, Object[] args) throws Throwable {
             Slog.d(TAG, "WebViewUpdateService: getWebViewProviderInfo called");
-            
+
             try {
                 // Try to get WebView provider info from the system
                 Object result = method.invoke(who, args);
@@ -137,7 +137,7 @@ public class IWebViewUpdateServiceProxy extends ClassInvocationStub {
             } catch (Exception e) {
                 Slog.w(TAG, "WebViewUpdateService: Failed to get WebView provider info", e);
             }
-            
+
             // Return null if system call fails
             return null;
         }
@@ -151,14 +151,14 @@ public class IWebViewUpdateServiceProxy extends ClassInvocationStub {
             if (args != null && args.length > 0) {
                 String packageName = (String) args[0];
                 Slog.d(TAG, "WebViewUpdateService: isWebViewPackage called for: " + packageName);
-                
+
                 // Check if it's a known WebView package
                 if (isKnownWebViewPackage(packageName)) {
                     Slog.d(TAG, "WebViewUpdateService: " + packageName + " is a known WebView package");
                     return true;
                 }
             }
-            
+
             try {
                 return method.invoke(who, args);
             } catch (Exception e) {
@@ -166,19 +166,19 @@ public class IWebViewUpdateServiceProxy extends ClassInvocationStub {
                 return false;
             }
         }
-        
+
         private boolean isKnownWebViewPackage(String packageName) {
             if (packageName == null) return false;
-            
+
             // List of known WebView packages
             return packageName.equals("com.google.android.webview") ||
-                   packageName.equals("com.google.android.webview.dev") ||
-                   packageName.equals("com.google.android.webview.beta") ||
-                   packageName.equals("com.google.android.webview.canary") ||
-                   packageName.equals("com.android.webview") ||
-                   packageName.equals("com.huawei.webview") ||
-                   packageName.equals("com.samsung.android.webview") ||
-                   packageName.equals("com.oneplus.webview");
+                    packageName.equals("com.google.android.webview.dev") ||
+                    packageName.equals("com.google.android.webview.beta") ||
+                    packageName.equals("com.google.android.webview.canary") ||
+                    packageName.equals("com.android.webview") ||
+                    packageName.equals("com.huawei.webview") ||
+                    packageName.equals("com.samsung.android.webview") ||
+                    packageName.equals("com.oneplus.webview");
         }
     }
 
@@ -188,7 +188,7 @@ public class IWebViewUpdateServiceProxy extends ClassInvocationStub {
         @Override
         protected Object hook(Object who, Method method, Object[] args) throws Throwable {
             Slog.d(TAG, "WebViewUpdateService: getWebViewProvider called");
-            
+
             try {
                 // Try to get WebView provider from the system
                 Object result = method.invoke(who, args);
@@ -199,7 +199,7 @@ public class IWebViewUpdateServiceProxy extends ClassInvocationStub {
             } catch (Exception e) {
                 Slog.w(TAG, "WebViewUpdateService: Failed to get WebView provider", e);
             }
-            
+
             // Return null if system call fails
             return null;
         }
@@ -214,7 +214,7 @@ public class IWebViewUpdateServiceProxy extends ClassInvocationStub {
                 String packageName = (String) args[0];
                 Slog.d(TAG, "WebViewUpdateService: enableWebViewPackage called for: " + packageName);
             }
-            
+
             try {
                 return method.invoke(who, args);
             } catch (Exception e) {
@@ -234,7 +234,7 @@ public class IWebViewUpdateServiceProxy extends ClassInvocationStub {
                 String packageName = (String) args[0];
                 Slog.d(TAG, "WebViewUpdateService: disableWebViewPackage called for: " + packageName);
             }
-            
+
             try {
                 return method.invoke(who, args);
             } catch (Exception e) {

@@ -89,7 +89,7 @@ public class BroadcastManager implements PackageMonitor {
                     ProxyBroadcastReceiver proxyBroadcastReceiver = new ProxyBroadcastReceiver();
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         BlackBoxCore.getContext().registerReceiver(proxyBroadcastReceiver, intent.intentFilter, Context.RECEIVER_EXPORTED);
-                    }else{
+                    } else {
                         BlackBoxCore.getContext().registerReceiver(proxyBroadcastReceiver, intent.intentFilter);
                     }
                     addReceiver(bPackage.packageName, proxyBroadcastReceiver);

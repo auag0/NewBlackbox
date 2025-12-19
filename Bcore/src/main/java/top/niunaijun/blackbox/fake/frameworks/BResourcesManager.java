@@ -1,21 +1,12 @@
 package top.niunaijun.blackbox.fake.frameworks;
 
 import android.content.Context;
-import android.content.res.AssetManager;
-import android.content.res.Resources;
-import android.os.Build;
 import android.util.Log;
 
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
 
-import top.niunaijun.blackbox.fake.hook.HookManager;
 import top.niunaijun.blackbox.fake.hook.IInjectHook;
-import top.niunaijun.blackbox.fake.hook.MethodHook;
-import top.niunaijun.blackbox.fake.hook.ProxyMethod;
 
 /**
  * Utility class to handle resource loading issues in virtual environment
@@ -43,21 +34,21 @@ public class BResourcesManager implements IInjectHook {
         if (applicationInfo == null) {
             return "Unknown App";
         }
-        
+
         // Try multiple approaches to get the package name
         String packageName = getPackageNameSafely(applicationInfo);
-        
+
         // If we have a package name, use it as the label to avoid resource loading
         if (packageName != null && !packageName.isEmpty()) {
             return packageName;
         }
-        
+
         // Try to get the label from the application info directly without triggering resource loading
         try {
             // Try to get the label from the application info's labelRes field first
             Method getLabelResMethod = applicationInfo.getClass().getMethod("getLabelRes");
             Integer labelRes = (Integer) getLabelResMethod.invoke(applicationInfo);
-            
+
             if (labelRes != null && labelRes != 0) {
                 // If we have a label resource, try to get it from the package manager
                 Object packageManager = getPackageManager();
@@ -69,7 +60,7 @@ public class BResourcesManager implements IInjectHook {
                     }
                 }
             }
-            
+
             // Fallback to loadLabel method
             Method loadLabelMethod = applicationInfo.getClass().getMethod("loadLabel", android.content.pm.PackageManager.class);
             Object packageManager = getPackageManager();
@@ -82,10 +73,10 @@ public class BResourcesManager implements IInjectHook {
         } catch (Exception e) {
             Log.w(TAG, "Failed to load app label: " + e.getMessage());
         }
-        
+
         return "Unknown App";
     }
-    
+
     /**
      * Get package name safely using multiple approaches
      */
@@ -101,7 +92,7 @@ public class BResourcesManager implements IInjectHook {
         } catch (Exception e) {
             Log.w(TAG, "Failed to get package name via field: " + e.getMessage());
         }
-        
+
         // Try getPackageName method
         try {
             Method getPackageNameMethod = applicationInfo.getClass().getMethod("getPackageName");
@@ -112,7 +103,7 @@ public class BResourcesManager implements IInjectHook {
         } catch (Exception e) {
             Log.w(TAG, "Failed to get package name via method: " + e.getMessage());
         }
-        
+
         // Try toString method to see if it contains package info
         try {
             String toString = applicationInfo.toString();
@@ -125,7 +116,7 @@ public class BResourcesManager implements IInjectHook {
         } catch (Exception e) {
             Log.w(TAG, "Failed to get package name via toString: " + e.getMessage());
         }
-        
+
         return null;
     }
 
@@ -138,7 +129,7 @@ public class BResourcesManager implements IInjectHook {
                 // First try to get the icon resource ID directly
                 Method getIconMethod = applicationInfo.getClass().getMethod("getIcon");
                 Integer iconRes = (Integer) getIconMethod.invoke(applicationInfo);
-                
+
                 if (iconRes != null && iconRes != 0) {
                     // Try to load the icon using the resource ID directly
                     Object packageManager = getPackageManager();
@@ -154,7 +145,7 @@ public class BResourcesManager implements IInjectHook {
                         }
                     }
                 }
-                
+
                 // Fallback to loadIcon method
                 Method loadIconMethod = applicationInfo.getClass().getMethod("loadIcon", android.content.pm.PackageManager.class);
                 Object packageManager = getPackageManager();
@@ -167,7 +158,7 @@ public class BResourcesManager implements IInjectHook {
         }
         return null;
     }
-    
+
     /**
      * Get package name from application info
      */
@@ -189,7 +180,7 @@ public class BResourcesManager implements IInjectHook {
             return null;
         }
     }
-    
+
     /**
      * Create a safe resource manager that doesn't load problematic overlays
      */
@@ -198,7 +189,7 @@ public class BResourcesManager implements IInjectHook {
             // Create a custom resource manager that skips problematic overlays
             Class<?> resourcesManagerClass = Class.forName("android.app.ResourcesManager");
             Object resourcesManager = resourcesManagerClass.newInstance();
-            
+
             // Set a flag to disable overlay loading
             try {
                 Field disableOverlayField = resourcesManagerClass.getDeclaredField("mDisableOverlayLoading");
@@ -207,14 +198,14 @@ public class BResourcesManager implements IInjectHook {
             } catch (Exception e) {
                 Log.w(TAG, "Could not set overlay loading flag: " + e.getMessage());
             }
-            
+
             return resourcesManager;
         } catch (Exception e) {
             Log.w(TAG, "Failed to create safe resource manager: " + e.getMessage());
             return null;
         }
     }
-    
+
     /**
      * Check if a path is a problematic overlay path
      */
