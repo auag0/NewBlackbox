@@ -1,0 +1,46 @@
+package pg.gotcha
+
+import android.app.Application
+import android.content.Context
+import top.niunaijun.blackbox.BlackBoxCore
+import top.niunaijun.blackbox.app.configuration.ClientConfiguration
+import java.io.File
+
+class MyApp : Application() {
+    companion object {
+        private var _baseDir: File? = null
+        val baseDir: File get() = _baseDir!!
+    }
+
+    override fun attachBaseContext(base: Context) {
+        super.attachBaseContext(base)
+
+        BlackBoxCore.get().closeCodeInit()
+        BlackBoxCore.get().onBeforeMainApplicationAttach(this, base)
+        BlackBoxCore.get().doAttachBaseContext(this, object : ClientConfiguration() {
+            override fun getHostPackageName(): String {
+                return base.packageName
+            }
+
+            override fun isHideRoot(): Boolean {
+                return true
+            }
+
+            override fun isHideXposed(): Boolean {
+                return true
+            }
+
+            override fun isEnableDaemonService(): Boolean {
+                return false
+            }
+        })
+        BlackBoxCore.get().onAfterMainApplicationAttach(this, base)
+    }
+
+    override fun onCreate() {
+        super.onCreate()
+        BlackBoxCore.get().doCreate()
+
+        _baseDir = File(this.filesDir, "GOTCHA")
+    }
+}
