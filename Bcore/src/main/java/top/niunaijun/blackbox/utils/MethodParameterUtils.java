@@ -58,29 +58,37 @@ public class MethodParameterUtils {
                 int uid = (int) args[i];
                 if (uid == BlackBoxCore.getBUid()) {
                     args[i] = BlackBoxCore.getHostUid();
+                    return;
                 }
             }
         }
     }
 
     public static void replaceLastUid(Object[] args) {
-        int index = ArrayUtils.indexOfLast(args, Integer.class);
-        if (index != -1) {
-            int uid = (int) args[index];
-            if (uid == BlackBoxCore.getBUid()) {
-                args[index] = BlackBoxCore.getHostUid();
+        if (args == null)
+            return;
+        for (int i = 0; i < args.length; i++) {
+            if (args[i] instanceof Integer) {
+                int uid = (int) args[i];
+                if (uid == BlackBoxCore.getBUid()) {
+                    args[i] = BlackBoxCore.getHostUid();
+                    return;
+                }
             }
         }
     }
 
     public static String replaceLastAppPkg(Object[] args) {
-        int index = ArrayUtils.indexOfLast(args, String.class);
-        if (index != -1) {
-            String pkg = (String) args[index];
-            if (BlackBoxCore.get().isInstalled(pkg, BlackBoxCore.getUserId())) {
-                args[index] = BlackBoxCore.getHostPkg();
+        if (args == null)
+            return null;
+        for (int i = args.length - 1; i >= 0; i--) {
+            if (args[i] instanceof String) {
+                String pkg = (String) args[i];
+                if (BlackBoxCore.get().isInstalled(pkg, BlackBoxCore.getUserId())) {
+                    args[i] = BlackBoxCore.getHostPkg();
+                    return pkg;
+                }
             }
-            return pkg;
         }
         return null;
     }
