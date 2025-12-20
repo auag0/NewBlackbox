@@ -34,6 +34,7 @@ import top.niunaijun.blackbox.fake.service.IAutofillManagerProxy;
 import top.niunaijun.blackbox.fake.service.IConnectivityManagerProxy;
 import top.niunaijun.blackbox.fake.service.IContentProviderProxy;
 import top.niunaijun.blackbox.fake.service.IContextHubServiceProxy;
+import top.niunaijun.blackbox.fake.service.ICrossProfileAppsProxy;
 import top.niunaijun.blackbox.fake.service.IDeviceIdentifiersPolicyProxy;
 import top.niunaijun.blackbox.fake.service.IDevicePolicyManagerProxy;
 import top.niunaijun.blackbox.fake.service.IDisplayManagerProxy;
@@ -166,6 +167,7 @@ public class HookManager {
             addInjector(new ISettingsSystemProxy());
             addInjector(new ISystemSensorManagerProxy());
             addInjector(new IRoleManagerProxy());
+            addInjector(new ICrossProfileAppsProxy());
 
             // Xiaomi-specific proxies to prevent crashes on MIUI devices
             addInjector(new IXiaomiAttributionSourceProxy());
