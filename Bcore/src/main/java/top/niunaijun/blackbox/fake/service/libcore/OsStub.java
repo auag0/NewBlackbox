@@ -66,6 +66,14 @@ public class OsStub extends ClassInvocationStub {
         return super.invoke(proxy, method, args);
     }
 
+    @ProxyMethod("chown")
+    public static class chown extends MethodHook {
+        @Override
+        protected Object hook(Object who, Method method, Object[] args) throws Throwable {
+            return 0;
+        }
+    }
+
     @ProxyMethod("getuid")
     public static class getuid extends MethodHook {
 
