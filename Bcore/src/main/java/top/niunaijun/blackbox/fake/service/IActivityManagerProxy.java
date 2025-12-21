@@ -126,6 +126,34 @@ public class IActivityManagerProxy extends ClassInvocationStub {
         }
     }
 
+    @ProxyMethod("checkPermissionForDevice")
+    public static class CheckPermissionForDevice extends MethodHook {
+        @Override
+        protected Object hook(Object who, Method method, Object[] args) throws Throwable {
+            MethodParameterUtils.replaceFirstUid(args);
+
+            String permission = (String) args[0];
+            if (isAudioPermission(permission)) {
+                Slog.d(TAG, "CheckPermissionForDevice: Granting audio permission: " + permission);
+                return PackageManager.PERMISSION_GRANTED;
+            }
+
+            // Also grant storage/media read permissions so hosted apps can see device media
+            if (isStorageOrMediaPermission(permission)) {
+                Slog.d(TAG, "CheckPermissionForDevice: Granting storage/media permission: " + permission);
+                return PackageManager.PERMISSION_GRANTED;
+            }
+
+            // Grant notification and Xiaomi permissions automatically
+            if (isNotificationOrXiaomiPermission(permission)) {
+                Slog.d(TAG, "CheckPermissionForDevice: Granting notification/Xiaomi permission: ");
+                return PackageManager.PERMISSION_GRANTED;
+            }
+
+            return method.invoke(who, args);
+        }
+    }
+
     @ProxyMethod("getContentProvider")
     public static class GetContentProvider extends MethodHook {
         @Override
@@ -797,6 +825,30 @@ public class IActivityManagerProxy extends ClassInvocationStub {
                 || permission.equals("android.permission.READ_MEDIA_AURAL_USER_SELECTED")) {
             return true;
         }
+        return false;
+    }
+
+    // Helper: recognize notification and Xiaomi-specific permissions
+    private static boolean isNotificationOrXiaomiPermission(String permission) {
+        if (permission == null) return false;
+
+        // Android 12+ notification permission
+        if (permission.equals("android.permission.POST_NOTIFICATIONS")) {
+            return true;
+        }
+
+        // Xiaomi-specific permissions
+        if (permission.equals("miui.permission.USE_INTERNAL_GENERAL_API") ||
+                permission.equals("miui.permission.OPTIMIZE_POWER") ||
+                permission.equals("miui.permission.RUN_IN_BACKGROUND") ||
+                permission.equals("miui.permission.POST_NOTIFICATIONS") ||
+                permission.equals("miui.permission.AUTO_START") ||
+                permission.equals("miui.permission.BACKGROUND_POPUP_WINDOW") ||
+                permission.equals("miui.permission.SHOW_WHEN_LOCKED") ||
+                permission.equals("miui.permission.TURN_SCREEN_ON")) {
+            return true;
+        }
+
         return false;
     }
 
