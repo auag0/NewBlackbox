@@ -2,40 +2,34 @@
 
 pluginManagement {
     repositories {
+        gradlePluginPortal()
+        google()
+        mavenCentral()
+
         maven(url = "https://www.jitpack.io")
-        maven(url = "https://maven.aliyun.com/repository/releases")
+        maven(url = "https://maven.aliyun.com/repository/gradle-plugin")
         maven(url = "https://maven.aliyun.com/repository/google")
         maven(url = "https://maven.aliyun.com/repository/central")
-        maven(url = "https://maven.aliyun.com/repository/gradle-plugin")
         maven(url = "https://maven.aliyun.com/repository/public")
-
-        google {
-            content {
-                includeGroupByRegex("com\\.android.*")
-                includeGroupByRegex("com\\.google.*")
-                includeGroupByRegex("androidx.*")
-            }
-        }
-        mavenCentral()
-        gradlePluginPortal()
+        maven(url = "https://maven.aliyun.com/repository/releases")
     }
 }
 
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
-        maven(url = "https://www.jitpack.io")
-        maven(url = "https://maven.aliyun.com/repository/releases")
-        maven(url = "https://maven.aliyun.com/repository/google")
-        maven(url = "https://maven.aliyun.com/repository/central")
-        maven(url = "https://maven.aliyun.com/repository/gradle-plugin")
-        maven(url = "https://maven.aliyun.com/repository/public")
         google()
         mavenCentral()
+
+        maven(url = "https://www.jitpack.io")
+        maven(url = "https://maven.aliyun.com/repository/google")
+        maven(url = "https://maven.aliyun.com/repository/central")
+        maven(url = "https://maven.aliyun.com/repository/public")
+        maven(url = "https://maven.aliyun.com/repository/releases")
     }
 }
 
-rootProject.name = "Priv-NewBlackbox"
+rootProject.name = "NewBlackbox"
 
 include(":app")
 include(":Bcore")

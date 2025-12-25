@@ -2,6 +2,8 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.compose")
+    id("com.google.devtools.ksp")
+    id("com.google.dagger.hilt.android")
 }
 
 val compileSdkVer = rootProject.extra["compileSdkVersion"] as Int
@@ -11,11 +13,11 @@ val appVersionCode = rootProject.extra["versionCode"] as Int
 val appVersionName = rootProject.extra["versionName"] as String
 
 android {
-    namespace = "pg.gotcha"
+    namespace = "io.github.auag0.newblackbox"
     compileSdk = compileSdkVer
 
     defaultConfig {
-        applicationId = "pg.gotcha"
+        applicationId = "io.github.auag0.newblackbox"
         minSdk = minSdkVersion
         compileSdk = compileSdkVer
         targetSdk = targetSdkVersion
@@ -50,8 +52,23 @@ dependencies {
     implementation(platform("androidx.compose:compose-bom:2025.12.01"))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
+    implementation("androidx.compose.material:material-icons-core:1.7.8")
+    implementation("androidx.compose.material:material-icons-extended:1.7.8")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
+
+    implementation("androidx.hilt:hilt-lifecycle-viewmodel-compose:1.3.0")
+
+    implementation("com.google.dagger:hilt-android:2.57.2")
+    ksp("com.google.dagger:hilt-compiler:2.57.2")
+
+    implementation("com.google.code.gson:gson:2.13.2")
+
+    implementation("com.squareup.retrofit2:retrofit:3.0.0")
+    implementation("com.squareup.retrofit2:converter-gson:3.0.0")
+
+    implementation("com.squareup.okhttp3:okhttp:5.3.2")
+    implementation("com.squareup.okhttp3:logging-interceptor:5.3.2")
 
     implementation(project(":Bcore"))
 }
